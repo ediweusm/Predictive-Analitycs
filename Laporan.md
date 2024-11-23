@@ -1,74 +1,145 @@
-# Laporan Proyek Machine Learning - Nama Anda
+# Laporan Proyek Machine Learning - Edi Widodo
 
 ## Domain Proyek
-
-Pada bagian ini, kamu perlu menuliskan latar belakang yang relevan dengan proyek yang diangkat.
-
+<p align="justify"> 
+Pasar cryptocurrency telah mengalami pertumbuhan signifikan dalam beberapa tahun terakhir, hal ini menarik minat investor pada pasar yang sedang berkembang ini karena potensi pengembalian keuntungan yang tinggi dan mengambil manfaat dari diversifikasi portofolio aset. Salah satu masalah utama dalam investasi portofolio cryptocurrency adalah tingginya volatilitas dan risiko yang terkait dengan pasar ini. Cryptocurrency dikenal dengan fluktuasi harga yang tinggi, yang dapat menghasilkan keuntungan atau kerugian signifikan dalam waktu singkat [1]. Hal ini menyulitkan investor untuk menentukan alokasi aset yang optimal dalam portofolio mereka dan mengelola risiko secara efektif [2,3]. Penelitian menunjukkan bahwa volatilitas tinggi pada cryptocurrency menjadi perhatian utama bagi investor, karena dapat menyebabkan kerugian signifikan dalam waktu singkat [1]. Volatilitas tinggi pada Bitcoin, misalnya, telah menyebabkan fluktuasi harga yang signifikan, sehingga sulit bagi investor untuk menentukan alokasi aset yang optimal dalam portofolio mereka [4]. Dari perubahan harga yang fluktuatif, terdapat stable coin yang memiliki harga relatif stabil terhadap US dollar, hal ini dapat memberikan potensi keuntungan perlindungan dari fluktuasi nilai aset crypto yang sangat tinggi. Naik turunnya nilai aset crypto yang beragam, memberikan gambaran bahwa beberapa pasangan crypto memiliki korelasi pergerakan harga yang negatif, artinya ketika satu crypto mengalami kenaikan, maka crypto pasangannya akan mengalami penurunan, salah satu pasangan crypto yang memiliki corelasi negatif adalah XRP dan USDT [17]. 
+Project ini menggunakan prediksi harga XRP yang dibandingkan dengan harga USDT pada saat ini, untuk memprediksi harga keduanya, menggunakan LSTM, kemudian dari prediksi harga keduanya, akan dihitung nilai Z-Score yang ada untuk memberikan saran, apakah aset XRP harus ditukarkan dengan aset USDT atau ditahan, demikian juga sebaliknya. 
+Dengan pendekatan ini, maka jumlah aset akan selalu mengalami kenaikan, meskipun jika nilai tukar aset terhadap US$ mengalami penurunan.
+</p>
 **Rubrik/Kriteria Tambahan (Opsional)**:
-- Jelaskan mengapa dan bagaimana masalah tersebut harus diselesaikan
-- Menyertakan hasil riset terkait atau referensi. Referensi yang diberikan harus berasal dari sumber yang kredibel dan author yang jelas.
-  
-  Format Referensi: [Judul Referensi](https://scholar.google.com/) 
+- Dengan menggunakan data nilai tukar XRP dan USDT harian yang didapat dari dataset Kaggle, dg LSTM dibuat prediksi harga di masa yang akan datang, harga tersebut kemudian dianalisis nilai Z-Score antara keduanya, jika nilai Z-Score menunjukkan negatif terhadap pasangannya, maka diberikan saran penukaran (Trade), jika positif maka diberikan saran untuk ditahan (Hold)
+
+*Referensi*
+
+[1] D. G. Baur and T. Dimpfl, “The volatility of Bitcoin and its role as a medium of exchange and a store of value,” Empir. Econ., vol. 61, no. 5, pp. 2663–2683, 2021, doi: 10.1007/s00181-020-01990-5.
+
+[2]	K. Schwab, K. Schwab, F. I. Revolution, and C. Directors, “Main ideas of the book To whom is this book indicated ? Overview of the book,” pp. 1–5, 2016.
+
+[3]	C. W. Su, M. Qin, R. Tao, and M. Umar, “Financial implications of fourth industrial revolution: Can bitcoin improve prospects of energy investment?,” Technol. Forecast. Soc. Change, vol. 158, no. June, 2020, doi: 10.1016/j.techfore.2020.120178.
+
+[4]	S. Zhang, M. Li, and C. Yan, “The Empirical Analysis of Bitcoin Price Prediction Based on Deep Learning Integration Method,” Comput. Intell. Neurosci., vol. 2022, 2022, doi: 10.1155/2022/1265837.
+
+[5]	P. Katsiampa, K. Gkillas, and F. Longin, “Cryptocurrency Market Activity During Extremely Volatile Periods,” SSRN Electron. J., 2018, doi: 10.2139/ssrn.3220781.
+
+[6]	S. P. Yadav, K. K. Agrawal, B. S. Bhati, F. Al-Turjman, and L. Mostarda, “Blockchain-Based Cryptocurrency Regulation: An Overview,” Comput. Econ., vol. 59, no. 4, pp. 1659–1675, 2022, doi: 10.1007/s10614-020-10050-0.
+[7]	S. Corbet, D. J. Cumming, B. M. Lucey, M. Peat, and S. A. Vigne, “The destabilising effects of cryptocurrency cybercriminality,” Econ. Lett., vol. 191, 2020, doi: 10.1016/j.econlet.2019.108741.
+
+[8]	A. Aspris, S. Foley, J. Svec, and L. Wang, “Decentralized exchanges: The ‘wild west’ of cryptocurrency trading,” Int. Rev. Financ. Anal., vol. 77, pp. 1–30, 2021, doi: 10.1016/j.irfa.2021.101845.
+
+[9]	S. Sorsen, J. Schulz, S. Sorsen, and J. Schulz, “Association for Information Systems AIS Electronic Library ( AISeL ) Algorithmic Trading and Cryptocurrency- a literature review and key findings Algorithmic Trading and Cryptocurrency- a literature review and key findings,” 2022.
+
+[10]	M. Hougan and D. Lawant, Cryptoassets: The Guide to Bitcoin, Blockchain, and Cryptocurrency for Investment Professionals. 2021. doi: 10.2139/ssrn.3792541.
+
+[11]	P. Katsiampa, S. Corbet, and B. Lucey, “High frequency volatility co-movements in cryptocurrency markets,” J. Int. Financ. Mark. Institutions Money, vol. 62, pp. 35–52, 2019, doi: 10.1016/j.intfin.2019.05.003.
+
+[12]	S. Qureshi, M. Aftab, E. Bouri, and T. Saeed, “Dynamic interdependence of cryptocurrency markets: An analysis across time and frequency,” Phys. A Stat. Mech. its Appl., vol. 559, p. 125077, Dec. 2020, doi: 10.1016/J.PHYSA.2020.125077.
+
+[13]	Q. Ji, E. Bouri, C. Keung, M. Lau, and D. Roubaud, “Dynamic connectedness and integration among large cryptocurrencies,” Elsevier, pp. 1–41, 219AD, [Online]. Available: https://www.sciencedirect.com/science/article/pii/S1057521918305416
+
+[14]	H. Akoglu, “Turkish Journal of Emergency Medicine User ’ s guide to correlation coe ffi cients,” Turkish J. Emerg. Med., vol. 18, no. August, pp. 91–93, 2018.
+
+[15]	J. Hauke and T. Kossowski, “Comparison of values of pearson’s and spearman’s correlation coefficients on the same sets of data,” Quaest. Geogr., vol. 30, no. 2, pp. 87–93, 2011, doi: 10.2478/v10117-011-0021-1.
+
+[16]	Y. Liu, Y. Mu, K. Chen, Y. Li, and J. Guo, “Daily Activity Feature Selection in Smart Homes Based on Pearson Correlation Coefficient,” Neural Process. Lett., vol. 51, no. 2, pp. 1771–1787, 2020, doi: 10.1007/s11063-019-10185-8.
+
+[17] T. Winarti, E. Widodo, S. Handayni and A. Nugroho, "Utilizing Pearson Correlation Matrix to Identify Negative Correlations Among Cryptocurrencies," 2024 3rd International Conference on Creative Communication and Innovative Technology (ICCIT), Tangerang, Indonesia, 2024, pp. 1-7, doi: 10.1109/ICCIT62134.2024.10701159.
 
 ## Business Understanding
 
-Pada bagian ini, kamu perlu menjelaskan proses klarifikasi masalah.
+<p align="justify"> Perilaku perdagangan cryptocurrency paling umum dilakukan adalah dengan mengukur nilai tukar aset cryptocurrency terhadap mata uang fiat, baik dalam bentuk rupiah maupun dollar Amerika. Hal ini membuat banyak pelaku perdagangan cryptocurrency memanfaatkan volatilitas nilai tukar cryptocurrency untuk mendapatkan keuntungan jangka pendek. Sementara itu, teknologi cryptocurrency terus berkembang seiring dengan perkembangan teknologi internet, oleh karena itu peluang jangka panjang terhadap teknologi ini masih sangat terbuka.
+Banyak pelaku perdagangan cryptocurrency mengalami kerugian besar, meskipun tidak sedikit yang mendapatkan untung besar juga, karena perubahan nilai tukar cryptocurrency terhadap mata uang fiat yang sangat fluktuatif. Sementara itu secara keseluruhan, grafik nilai tukar cryptocurrency terus bergerak naik.
+Dari analisa awal terhadap grafik pergerakan nilai tukar cryptocurrency, secara visual terlihat adanya hubungan antar masing-masing cryptocurrency. Pasangan cryptocurrency yang memiliki korelasi simpangan paling jauh memiliki arti bahwa sifat keduanya saling berlawanan, sehingga memiliki peluang terbesar untuk terus meningkatkan nilai aset yang dimiliki, dengan cara menukarkan aset cryptocurrency x terhadap aset cryptocurrency y dan sebaliknya. Jika aset x mengalami peningkatan nilai terhadap aset y, maka aset x harus dilepaskan untuk ditukar dengan aset y. Pertukaran dapat kembali dilakukan saat aset y nilainya meningkat terhadap aset x.
+</p>
 
-Bagian laporan ini mencakup:
-
-### Problem Statements
-
-Menjelaskan pernyataan masalah latar belakang:
-- Pernyataan Masalah 1
-- Pernyataan Masalah 2
-- Pernyataan Masalah n
+## Problem Statements
+- Bagaimana menentukan rekomendasi apakah saat ini harus menukarkan Aset XRP menjadi USDT atau sebaliknya agar terhindar dari kerugian yang berlebih dari fluktuasi nilai tukar.
+- Bagaimana Mengukur nilai Z-Score dari hasil prediksi nilai dimasa yang akan datang.
 
 ### Goals
-
-Menjelaskan tujuan dari pernyataan masalah:
-- Jawaban pernyataan masalah 1
-- Jawaban pernyataan masalah 2
-- Jawaban pernyataan masalah n
-
-Semua poin di atas harus diuraikan dengan jelas. Anda bebas menuliskan berapa pernyataan masalah dan juga goals yang diinginkan.
+- Membuat prediksi harga pasangan aset (XRP dan USDT) di masa yang akan datang berdasarkan harga masa lalu, dan harga saat ini.
+- Dari prediksi harga masa yang akan datang, kemudian diukur nilai Z-Score antara keduanya, jika nilainya negatif, maka berikan saran untuk penukaran, jika positif maka lakukan langkah tahan aset.
 
 **Rubrik/Kriteria Tambahan (Opsional)**:
-- Menambahkan bagian “Solution Statement” yang menguraikan cara untuk meraih goals. Bagian ini dibuat dengan ketentuan sebagai berikut: 
-
-    ### Solution statements
-    - Mengajukan 2 atau lebih solution statement. Misalnya, menggunakan dua atau lebih algoritma untuk mencapai solusi yang diinginkan atau melakukan improvement pada baseline model dengan hyperparameter tuning.
-    - Solusi yang diberikan harus dapat terukur dengan metrik evaluasi.
+- Mengambil dataset dari kaggle, di lokasi (https://www.kaggle.com/datasets/svaningelgem/crypto-currencies-daily-prices) khusus pada aset XRP dan USDT, berdasarkan riset yang telah dilakukan sebelumnya, bahwa kedua aset tersebut memiliki korelasi negatif yang cukup untuk menjadi pasangan pertukaran aset [17]
+- Membuat prediksi harga dimasa depan menggunakan LSTM berdasarkan dari dataset masa lalu.
+- Mengukur nilai Z-Score dari prediksi harga dimasa depan, dan memberikan solusi yang direkomendasikan
 
 ## Data Understanding
-Paragraf awal bagian ini menjelaskan informasi mengenai data yang Anda gunakan dalam proyek. Sertakan juga sumber atau tautan untuk mengunduh dataset. Contoh: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data).
+- Dataset diambil dari (https://www.kaggle.com/datasets/svaningelgem/crypto-currencies-daily-prices)   yang bersifat update harian.
 
-Selanjutnya uraikanlah seluruh variabel atau fitur pada data. Sebagai contoh:  
-
-### Variabel-variabel pada Restaurant UCI dataset adalah sebagai berikut:
-- accepts : merupakan jenis pembayaran yang diterima pada restoran tertentu.
-- cuisine : merupakan jenis masakan yang disajikan pada restoran.
-- dst
+### Variabel-variabel pada dataset tersebut adalah sebagai berikut:
+- ticker : Label untuk nama asset cryptocurrency [XRP,USDT]
+- date : merupakan tanggal data direkam yang bersifat harian.
+- open : merupakan harga pembukaan transaksi pertukaran nilai asset dalam US$ sesuai tanggal.
+- high : merupakan harga tertinggi dalam US$ harian sesuai tanggal.
+- low : merupakan harga terendah harian dalam US$ sesuai tanggal.
+- close : merupakan harga pada saat tanggal penutupan.
 
 **Rubrik/Kriteria Tambahan (Opsional)**:
-- Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data atau exploratory data analysis.
-
+- Saya melakukan riset ini sejak lama, mengamati pergerakan grafik nilai tukar asset crypto, kemudian melakukan analisis pergerakan menggunakan pearson correlation
+- Ternyata dari riset sebelumnya, ada korelasi negatif yang cukup antara asset XRP dan USDT.
+- Pada analisis ini, saya melanjutkan riset sebelumnya untuk memberikan rekomendasi harus menukarkan aset atau harus menahannya dengan prediksi nilai dimasa depan yang dihitung z-score antara keduanya.
+- Z-Score adalah ukuran statistik yang digunakan untuk menilai sejauh mana suatu titik data berbeda dari rata-rata dalam satuan standar deviasi. 
+   
 ## Data Preparation
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
+1. Conect ke GDRIVE
+2. Mempersiapkan library
+3. Membuat dataset time series
+4. Muat dataset XRP dan USDT
+5. Gabungkan Data
+6. Tampilkan Visualisasi Pergerakan nilai
+7. Hitung Matrix Korelasi & Normalisasi Data
+8. Trainning Data
+9. Membuat Model Prediksi LSTM
+10. Prediksi Dataset
+11. Fungsi Rekomendasi Action
+12. Masukkan nilai XRP dan USDT
+13. Tampilkan visualisasi data berdasarkan prediksi terakhir
+14. Menampilkan rekomendasi grafik Trade atau Hold
 
 **Rubrik/Kriteria Tambahan (Opsional)**: 
 - Menjelaskan proses data preparation yang dilakukan
 - Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
 
-## Modeling
-Tahapan ini membahas mengenai model machine learning yang digunakan untuk menyelesaikan permasalahan. Anda perlu menjelaskan tahapan dan parameter yang digunakan pada proses pemodelan.
+# Modeling
+## Preprocessing Data:
+- Normalisasi Data: Data harga dinormalisasi menggunakan MinMaxScaler agar semua nilai berada dalam rentang [0, 1]. Hal ini membantu model LSTM untuk lebih cepat melakukan konvergensi selama pelatihan.
+- Time Series Dataset: Dataset disusun menjadi urutan waktu dengan menggunakan jendela waktu (window). Misalnya, data 30 hari terakhir digunakan untuk memprediksi harga pada hari berikutnya.
+
+## Pemisahan Data:
+- Training Set (80%): Data ini digunakan untuk melatih model.
+- Test Set (20%): Data ini digunakan untuk mengevaluasi kinerja model pada data yang belum pernah dilihat.
+
+## Arsitektur Model LSTM:
+- Input Layer: Menerima data dalam bentuk urutan (sequence) dengan fitur tunggal (harga).
+- Hidden Layers:
+- Dua lapisan LSTM digunakan untuk menangkap pola temporal.
+- Dropout dapat ditambahkan (opsional) untuk mengurangi risiko overfitting.
+- Output Layer: Satu neuron pada lapisan akhir memprediksi nilai harga berikutnya.
+
+## Kompilasi Model:
+- Optimizer: Adam Optimizer digunakan karena adaptif terhadap perubahan gradien selama pelatihan.
+- Loss Function: Mean Squared Error (MSE) digunakan untuk mengukur perbedaan antara prediksi dan nilai aktual.
+
+## Pelatihan Model:
+- Model dilatih dengan beberapa epoch (misalnya, 20–50 epoch) untuk mencapai kinerja optimal.
+- Batch Size: Data diproses dalam batch kecil (misalnya, 32) untuk efisiensi pelatihan.
+- Evaluasi Model: Model diuji pada data test untuk menghitung Mean Squared Error (MSE) atau Root Mean Squared Error (RMSE) sebagai metrik kinerja.
+- Prediksi harga di masa depan dibandingkan dengan nilai aktual untuk mengevaluasi akurasi model.
 
 **Rubrik/Kriteria Tambahan (Opsional)**: 
 - Menjelaskan kelebihan dan kekurangan dari setiap algoritma yang digunakan.
 - Jika menggunakan satu algoritma pada solution statement, lakukan proses improvement terhadap model dengan hyperparameter tuning. **Jelaskan proses improvement yang dilakukan**.
 - Jika menggunakan dua atau lebih algoritma pada solution statement, maka pilih model terbaik sebagai solusi. **Jelaskan mengapa memilih model tersebut sebagai model terbaik**.
 
-## Evaluation
-Pada bagian ini anda perlu menyebutkan metrik evaluasi yang digunakan. Lalu anda perlu menjelaskan hasil proyek berdasarkan metrik evaluasi yang digunakan.
+# Evaluation
+## Metrik Evaluasi yang Digunakan
+- Mean Squared Error (MSE): Mengukur rata-rata kesalahan kuadrat antara nilai prediksi dan nilai aktual
+  - Interpretasi: Semakin kecil nilai MSE, semakin baik performa model, Sensitif terhadap outlier karena menghitung kuadrat dari kesalahan.
+- Root Mean Squared Error (RMSE): Akar kuadrat dari MSE, yang memberikan interpretasi langsung dalam skala yang sama dengan data asli.
+  - Interpretasi: RMSE lebih intuitif dibandingkan MSE karena dalam unit asli harga (USD), Digunakan untuk mengevaluasi tingkat deviasi prediksi dari nilai aktual.
+- Mean Absolute Error (MAE): Mengukur rata-rata kesalahan absolut antara nilai prediksi dan nilai aktual.
+  - Interpretasi: Lebih robust terhadap outlier dibandingkan MSE, Memberikan indikasi rata-rata kesalahan dalam unit asli data.
 
 Sebagai contoh, Anda memiih kasus klasifikasi dan menggunakan metrik **akurasi, precision, recall, dan F1 score**. Jelaskan mengenai beberapa hal berikut:
 - Penjelasan mengenai metrik yang digunakan
