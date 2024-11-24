@@ -6,10 +6,12 @@ Pasar cryptocurrency telah mengalami pertumbuhan signifikan dalam beberapa tahun
 Project ini menggunakan prediksi harga XRP yang dibandingkan dengan harga USDT pada saat ini, untuk memprediksi harga keduanya, menggunakan LSTM, kemudian dari prediksi harga keduanya, akan dihitung nilai Z-Score yang ada untuk memberikan saran, apakah aset XRP harus ditukarkan dengan aset USDT atau ditahan, demikian juga sebaliknya. 
 Dengan pendekatan ini, maka jumlah aset akan selalu mengalami kenaikan, meskipun jika nilai tukar aset terhadap US$ mengalami penurunan.
 </p>
-**Rubrik/Kriteria Tambahan (Opsional)**:
+<br>
+## Rubrik/Kriteria Tambahan (Opsional):
+
 - Dengan menggunakan data nilai tukar XRP dan USDT harian yang didapat dari dataset Kaggle, dg LSTM dibuat prediksi harga di masa yang akan datang, harga tersebut kemudian dianalisis nilai Z-Score antara keduanya, jika nilai Z-Score menunjukkan negatif terhadap pasangannya, maka diberikan saran penukaran (Trade), jika positif maka diberikan saran untuk ditahan (Hold)
 
-*Referensi*
+### Referensi
 
 [1] D. G. Baur and T. Dimpfl, “The volatility of Bitcoin and its role as a medium of exchange and a store of value,” Empir. Econ., vol. 61, no. 5, pp. 2663–2683, 2021, doi: 10.1007/s00181-020-01990-5.
 
