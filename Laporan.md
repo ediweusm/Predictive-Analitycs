@@ -49,7 +49,7 @@ Dengan pendekatan ini, maka jumlah aset akan selalu mengalami kenaikan, meskipun
 ## Business Understanding
 
 <p align="justify"> Perilaku perdagangan cryptocurrency paling umum dilakukan adalah dengan mengukur nilai tukar aset cryptocurrency terhadap mata uang fiat, baik dalam bentuk rupiah maupun dollar Amerika. Hal ini membuat banyak pelaku perdagangan cryptocurrency memanfaatkan volatilitas nilai tukar cryptocurrency untuk mendapatkan keuntungan jangka pendek. Sementara itu, teknologi cryptocurrency terus berkembang seiring dengan perkembangan teknologi internet, oleh karena itu peluang jangka panjang terhadap teknologi ini masih sangat terbuka.
-Banyak pelaku perdagangan cryptocurrency mengalami kerugian besar, meskipun tidak sedikit yang mendapatkan untung besar juga, karena perubahan nilai tukar cryptocurrency terhadap mata uang fiat yang sangat fluktuatif. Sementara itu secara keseluruhan, grafik nilai tukar cryptocurrency terus bergerak naik.
+Banyak pelaku perdagangan cryptocurrency mengalami kerugian besar, meskipun tidak sedikit yang mendapatkan untung besar juga, karena perubahan nilai tukar cryptocurrency terhadap mata uang fiat yang sangat fluktuatif. Sementara itu secara keseluruhan, grafik nilai tukar cryptocurrency terus bergerak naik. <br>
 Dari analisa awal terhadap grafik pergerakan nilai tukar cryptocurrency, secara visual terlihat adanya hubungan antar masing-masing cryptocurrency. Pasangan cryptocurrency yang memiliki korelasi simpangan paling jauh memiliki arti bahwa sifat keduanya saling berlawanan, sehingga memiliki peluang terbesar untuk terus meningkatkan nilai aset yang dimiliki, dengan cara menukarkan aset cryptocurrency x terhadap aset cryptocurrency y dan sebaliknya. Jika aset x mengalami peningkatan nilai terhadap aset y, maka aset x harus dilepaskan untuk ditukar dengan aset y. Pertukaran dapat kembali dilakukan saat aset y nilainya meningkat terhadap aset x.
 </p>
 
@@ -60,6 +60,7 @@ Dari analisa awal terhadap grafik pergerakan nilai tukar cryptocurrency, secara 
 ### Goals
 - Membuat prediksi harga pasangan aset (XRP dan USDT) di masa yang akan datang berdasarkan harga masa lalu, dan harga saat ini.
 - Dari prediksi harga masa yang akan datang, kemudian diukur nilai Z-Score antara keduanya, jika nilainya negatif, maka berikan saran untuk penukaran, jika positif maka lakukan langkah tahan aset.
+- Sistem ini melakukan Prediksi dengan LSTM, sekaligus memberikan rekomendasi berdasarkan nilai Z-Score dari hasil prediksi algoritma LSTM.
 
 **Rubrik/Kriteria Tambahan (Opsional)**:
 - Mengambil dataset dari kaggle, di lokasi (https://www.kaggle.com/datasets/svaningelgem/crypto-currencies-daily-prices) khusus pada aset XRP dan USDT, berdasarkan riset yang telah dilakukan sebelumnya, bahwa kedua aset tersebut memiliki korelasi negatif yang cukup untuk menjadi pasangan pertukaran aset [17]
@@ -99,10 +100,6 @@ Dari analisa awal terhadap grafik pergerakan nilai tukar cryptocurrency, secara 
 13. Tampilkan visualisasi data berdasarkan prediksi terakhir
 14. Menampilkan rekomendasi grafik Trade atau Hold
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan proses data preparation yang dilakukan
-- Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
-
 # Modeling
 ## Preprocessing Data:
 - Normalisasi Data: Data harga dinormalisasi menggunakan MinMaxScaler agar semua nilai berada dalam rentang [0, 1]. Hal ini membantu model LSTM untuk lebih cepat melakukan konvergensi selama pelatihan.
@@ -113,11 +110,13 @@ Dari analisa awal terhadap grafik pergerakan nilai tukar cryptocurrency, secara 
 - Test Set (20%): Data ini digunakan untuk mengevaluasi kinerja model pada data yang belum pernah dilihat.
 
 ## Arsitektur Model LSTM:
-- Input Layer: Menerima data dalam bentuk urutan (sequence) dengan fitur tunggal (harga).
+- Input Layer:
+  - Menerima data dalam bentuk urutan (sequence) dengan fitur tunggal (harga).
 - Hidden Layers:
-- Dua lapisan LSTM digunakan untuk menangkap pola temporal.
-- Dropout dapat ditambahkan (opsional) untuk mengurangi risiko overfitting.
-- Output Layer: Satu neuron pada lapisan akhir memprediksi nilai harga berikutnya.
+  - Dua lapisan LSTM digunakan untuk menangkap pola temporal.
+  - Dropout dapat ditambahkan (opsional) untuk mengurangi risiko overfitting.
+- Output Layer:
+  - Satu neuron pada lapisan akhir memprediksi nilai harga berikutnya.
 
 ## Kompilasi Model:
 - Optimizer: Adam Optimizer digunakan karena adaptif terhadap perubahan gradien selama pelatihan.
@@ -129,11 +128,6 @@ Dari analisa awal terhadap grafik pergerakan nilai tukar cryptocurrency, secara 
 - Evaluasi Model: Model diuji pada data test untuk menghitung Mean Squared Error (MSE) atau Root Mean Squared Error (RMSE) sebagai metrik kinerja.
 - Prediksi harga di masa depan dibandingkan dengan nilai aktual untuk mengevaluasi akurasi model.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan kelebihan dan kekurangan dari setiap algoritma yang digunakan.
-- Jika menggunakan satu algoritma pada solution statement, lakukan proses improvement terhadap model dengan hyperparameter tuning. **Jelaskan proses improvement yang dilakukan**.
-- Jika menggunakan dua atau lebih algoritma pada solution statement, maka pilih model terbaik sebagai solusi. **Jelaskan mengapa memilih model tersebut sebagai model terbaik**.
-
 # Evaluation
 ## Metrik Evaluasi yang Digunakan
 - Mean Squared Error (MSE): Mengukur rata-rata kesalahan kuadrat antara nilai prediksi dan nilai aktual
@@ -143,13 +137,51 @@ Dari analisa awal terhadap grafik pergerakan nilai tukar cryptocurrency, secara 
 - Mean Absolute Error (MAE): Mengukur rata-rata kesalahan absolut antara nilai prediksi dan nilai aktual.
   - Interpretasi: Lebih robust terhadap outlier dibandingkan MSE, Memberikan indikasi rata-rata kesalahan dalam unit asli data.
 
-Sebagai contoh, Anda memiih kasus klasifikasi dan menggunakan metrik **akurasi, precision, recall, dan F1 score**. Jelaskan mengenai beberapa hal berikut:
-- Penjelasan mengenai metrik yang digunakan
-- Menjelaskan hasil proyek berdasarkan metrik evaluasi
+## Hasil pengujian terhadap model adalah sebagai berikut :
+### Metrics XRP
+- Mean Squared Error (MSE): 0.00185
+  - MSE mengukur rata-rata kesalahan kuadrat antara nilai prediksi dan nilai aktual.
+  - Nilai 0.00185 menunjukkan bahwa model memiliki tingkat kesalahan kuadrat rata-rata yang kecil.
+  - Karena MSE sensitif terhadap outlier, kesalahan besar pada satu prediksi akan lebih memengaruhi hasil.
+- Root Mean Squared Error (RMSE): 0.04306
+  - RMSE adalah akar kuadrat dari MSE, memberikan kesalahan rata-rata dalam unit asli (normalisasi).
+  - Nilai 0.04306 menunjukkan bahwa prediksi rata-rata meleset sekitar 4.3% dari skala normalisasi data XRP.
+- Mean Absolute Error (MAE): 0.03140
+  - MAE mengukur rata-rata kesalahan absolut antara prediksi dan nilai aktual.
+  - Nilai 0.03140 berarti bahwa, rata-rata, prediksi model meleset sekitar 3.1% dalam skala normalisasi.
+- Kesimpulan XRP:
+  - Model memiliki performa yang cukup baik dengan kesalahan prediksi rata-rata relatif kecil (sekitar 3.1–4.3%).
+  -- Namun, MSE menunjukkan bahwa kesalahan besar (jika ada) memengaruhi hasil lebih signifikan.
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+### Metrics USDT
+- Mean Squared Error (MSE): 0.00000
+  - Nilai 0.00000 menunjukkan bahwa model memiliki kesalahan kuadrat rata-rata yang sangat kecil, mendekati nol.
+  - Hal ini mengindikasikan prediksi sangat dekat dengan nilai aktual pada skala normalisasi.
+- Root Mean Squared Error (RMSE): 0.00062
+  - RMSE sebesar 0.00062 menunjukkan bahwa prediksi rata-rata meleset kurang dari 0.1% dari skala normalisasi data USDT.
+- Mean Absolute Error (MAE): 0.00052
+  - MAE sebesar 0.00052 berarti rata-rata kesalahan prediksi hanya sekitar 0.05%, menunjukkan performa prediksi yang sangat akurat.
+- Kesimpulan USDT:
+  - Model memiliki performa luar biasa dengan kesalahan prediksi yang hampir tidak signifikan.
+  - Hasil ini mungkin menunjukkan bahwa pola harga USDT lebih mudah diprediksi oleh model dibandingkan XRP.
+ 
+### Perbandingan XRP dan USDT
+- MSE:
+  - XRP memiliki MSE lebih besar (0.00185) dibandingkan USDT (0.00000), menunjukkan model lebih kesulitan dalam memprediksi harga XRP.
+- RMSE dan MAE:
+  - XRP memiliki kesalahan rata-rata yang lebih besar (RMSE: 0.04306, MAE: 0.03140) dibandingkan USDT (RMSE: 0.00062, MAE: 0.00052).
+  - Hal ini menunjukkan bahwa prediksi harga USDT lebih stabil dan akurat dibandingkan XRP.
+- Stabilitas Prediksi:
+  - Model lebih efektif dalam memprediksi USDT, kemungkinan karena pola harga USDT lebih linear atau lebih sedikit volatil dibandingkan XRP.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+### Makna Z-Score untuk XRP dan USDT
+- Menganalisis Relasi:
+  - Z-Score membantu memahami bagaimana harga XRP dan USDT berubah relatif terhadap distribusi mereka.
+  - Jika Z-Score XRP tinggi (+ve) dan USDT rendah (-ve), ada kemungkinan hubungan negatif di antara mereka.
+- Mengidentifikasi Outlier:
+  - Harga dengan ∣Z∣>2 dianggap outlier. Ini penting untuk memahami volatilitas harga.
+- Rekomendasi Perdagangan:
+  - Ketika Z-Score XRP jauh lebih tinggi dari rata-rata (+ve) dan USDT jauh lebih rendah (-ve), pertukaran XRP ke USDT mungkin menguntungkan.
+  - Sebaliknya, jika Z-Score XRP rendah (-ve) dan USDT tinggi (+ve), pertukaran USDT ke XRP dapat dipertimbangkan.
 
 **---Ini adalah bagian akhir laporan---**
