@@ -27,9 +27,7 @@ Berdasarkan hasil riset yang dilakukan oleh widodo [5], dalam mengamati pergerak
 
 ## Data Understanding
 - Mengambil dataset dari kaggle, di lokasi (https://www.kaggle.com/datasets/svaningelgem/crypto-currencies-daily-prices) khusus pada aset XRP dan USDT, berdasarkan riset yang telah dilakukan sebelumnya, bahwa kedua aset tersebut memiliki korelasi negatif yang cukup untuk menjadi pasangan pertukaran aset [5]
-- Membuat prediksi harga dimasa depan menggunakan LSTM berdasarkan dari dataset masa lalu.
-- Mengukur nilai Z-Score dari prediksi harga dimasa depan, dan memberikan solusi yang direkomendasikan.
-- Z-Score adalah ukuran statistik yang digunakan untuk menilai sejauh mana suatu titik data berbeda dari rata-rata dalam satuan standar deviasi. 
+- Jumlah data yang digunakan adalah XRP: 3.593 dan USDT: 2.822
 - Hanya kolom date dan close, yang digunakan untuk melakukan prediksi harga dimasa yang akan datang.
 
 ### Variabel-variabel pada dataset tersebut adalah sebagai berikut:
