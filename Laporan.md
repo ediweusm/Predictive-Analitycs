@@ -67,12 +67,12 @@ Berdasarkan hasil riset yang dilakukan oleh widodo [5], dalam mengamati pergerak
 
    ```ruby
    # Menggunakan IQR untuk menangani outlier
-  Q1 = df['Close_XRP'].quantile(0.25)  
-  Q3 = df['Close_XRP'].quantile(0.75)
+  Q1 = df['close_XRP'].quantile(0.25)  
+  Q3 = df['close_XRP'].quantile(0.75)
   IQR = Q3 - Q1
 
   # Hapus outlier dari XRP
-  df = df[~((df['Close_XRP'] < (Q1 - 1.5 * IQR)) | (df['Close_XRP'] > (Q3 + 1.5 * IQR)))]
+  df = df[~((df['close_XRP'] < (Q1 - 1.5 * IQR)) | (df['close_XRP'] > (Q3 + 1.5 * IQR)))]
    ```
 
 ### 3. Feature Engineering
@@ -80,6 +80,36 @@ Berdasarkan hasil riset yang dilakukan oleh widodo [5], dalam mengamati pergerak
 - Pendekatan:
   - Technical Indicators: Membuat indikator teknikal seperti moving average (SMA), exponential moving average (EMA), atau relative strength index (RSI).
   - Lag Features: Menambahkan kolom harga sebelumnya sebagai prediktor.
+- Implementasi dalam project : Moving Average (7 hari)
+  ```ruby
+  df['SMA_7_XRP'] = df['close_XRP'].rolling(window=7).mean()
+  df['SMA_7_USDT'] = df['close_USDT'].rolling(window=7).mean()
+  ```
+
+### 4. Data Transformation
+- Tujuan: Mengubah skala data agar lebih sesuai untuk algoritma machine learning.
+- Pendekatan:
+  - Min-Max Scaling: Mengubah skala data ke rentang [0, 1], digunakan untuk LSTM.
+  - Standardization: Mengubah data menjadi distribusi dengan mean 0 dan standar deviasi 1.
+- Langkah Implementasi dalam project:
+  ```ruby
+   from sklearn.preprocessing import MinMaxScaler  
+   scaler = MinMaxScaler()
+   df['Close_XRP_Normalized'] = scaler.fit_transform(df[['Close_XRP']])
+   df['Close_USDT_Normalized'] = scaler.fit_transform(df[['Close_USDT']])
+  ```
+### 5. Validasi Data
+- Tujuan: Memastikan data bebas dari masalah setelah preprocessing.
+- Pendekatan:
+  -- Cek kembali data setelah preprocessing untuk memastikan tidak ada nilai kosong, outlier, atau fitur yang hilang.
+- Langkah Implementasi:
+  ```ruby
+  # Periksa apakah ada nilai kosong
+  print(df.isnull().sum())
+  
+  # Periksa dimensi data
+  print(df.shape)
+  ```
 
 # Modeling
 ## Preprocessing Data:
