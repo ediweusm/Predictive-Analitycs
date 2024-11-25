@@ -39,20 +39,42 @@ Berdasarkan hasil riset yang dilakukan oleh widodo [5], dalam mengamati pergerak
 - close : merupakan harga pada saat tanggal penutupan.
  
 ## Data Preparation
-1. Conect ke GDRIVE
-2. Mempersiapkan library
-3. Membuat dataset time series
-4. Muat dataset XRP dan USDT
-5. Gabungkan Data
-6. Tampilkan Visualisasi Pergerakan nilai
-7. Hitung Matrix Korelasi & Normalisasi Data
-8. Trainning Data
-9. Membuat Model Prediksi LSTM
-10. Prediksi Dataset
-11. Fungsi Rekomendasi Action
-12. Masukkan nilai XRP dan USDT
-13. Tampilkan visualisasi data berdasarkan prediksi terakhir
-14. Menampilkan rekomendasi grafik Trade atau Hold
+### 1. Handling Missing Values
+- Tujuan: Memastikan tidak ada nilai kosong yang dapat memengaruhi proses pelatihan model.
+- Pendekatan:
+  - Drop Missing Values: 
+    - Jika jumlah data yang hilang kecil dan tidak signifikan, baris atau kolom yang mengandung nilai kosong dihapus.
+  - Imputasi: Jika data hilang signifikan, nilai yang hilang diisi dengan:
+    - Mean (rata-rata)
+    - Median (nilai tengah)
+    - Mode (nilai yang paling sering muncul)
+  - Implementasi Code :
+  
+     `df = df.dropna()`
+
+     `df['Close_XRP'].fillna(df['Close_XRP'].mean(), inplace=True)`
+    
+     `df['Close_USDT'].fillna(df['Close_USDT'].mean(), inplace=True)`
+    
+    
+
+### 2. Handling Outlier
+- Tujuan: Mengatasi nilai yang terlalu ekstrem yang dapat memengaruhi performa model.
+- Pendekatan:
+  - Z-Score: Menghapus data dengan Z-Score di luar ambang batas (misalnya, |Z| > 3).
+  - IQR (Interquartile Range): Menghapus nilai di luar rentang [Q1 - 1.5IQR, Q3 + 1.5IQR].
+- Implementasi Code :
+
+  `Q1 = df['Close_XRP'].quantile(0.25)`
+  `Q3 = df['Close_XRP'].quantile(0.75)`
+  `IQR = Q3 - Q1`
+  `df = df[~((df['Close_XRP'] < (Q1 - 1.5 * IQR)) | (df['Close_XRP'] > (Q3 + 1.5 * IQR)))]`
+
+### 3. Feature Engineering
+- Tujuan: Membuat fitur baru yang relevan dan dapat membantu model memahami pola dalam data.
+- Pendekatan:
+  - Technical Indicators: Membuat indikator teknikal seperti moving average (SMA), exponential moving average (EMA), atau relative strength index (RSI).
+  - Lag Features: Menambahkan kolom harga sebelumnya sebagai prediktor.
 
 # Modeling
 ## Preprocessing Data:
