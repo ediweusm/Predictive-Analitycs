@@ -49,14 +49,14 @@ Berdasarkan hasil riset yang dilakukan oleh widodo [5], dalam mengamati pergerak
     - Median (nilai tengah)
     - Mode (nilai yang paling sering muncul)
   - Implementasi Code :
-  
-     `df = df.dropna()`
-
-     `df['Close_XRP'].fillna(df['Close_XRP'].mean(), inplace=True)`
-    
-     `df['Close_USDT'].fillna(df['Close_USDT'].mean(), inplace=True)`
-    
-    
+     ```ruby
+    df = df.dropna()
+     ```
+     ```ruby
+     # Kode ini tidak dipakai, hanya contoh jika ada data yang hilang, maka diisi dengan nilai mean
+    df['Close_XRP'].fillna(df['Close_XRP'].mean(), inplace=True)
+    df['Close_USDT'].fillna(df['Close_USDT'].mean(), inplace=True)
+     ```
 
 ### 2. Handling Outlier
 - Tujuan: Mengatasi nilai yang terlalu ekstrem yang dapat memengaruhi performa model.
@@ -65,13 +65,15 @@ Berdasarkan hasil riset yang dilakukan oleh widodo [5], dalam mengamati pergerak
   - IQR (Interquartile Range): Menghapus nilai di luar rentang [Q1 = -1.5, Q3 = 1.5].
 - Implementasi Code :
 
-  `Q1 = df['Close_XRP'].quantile(0.25)`
-  
-  `Q3 = df['Close_XRP'].quantile(0.75)`
-  
-  `IQR = Q3 - Q1`
-  
-  `df = df[~((df['Close_XRP'] < (Q1 - 1.5 * IQR)) | (df['Close_XRP'] > (Q3 + 1.5 * IQR)))]`
+   ```ruby
+   # Menggunakan IQR untuk menangani outlier
+  Q1 = df['Close_XRP'].quantile(0.25)  
+  Q3 = df['Close_XRP'].quantile(0.75)
+  IQR = Q3 - Q1
+
+  # Hapus outlier dari XRP
+  df = df[~((df['Close_XRP'] < (Q1 - 1.5 * IQR)) | (df['Close_XRP'] > (Q3 + 1.5 * IQR)))]
+   ```
 
 ### 3. Feature Engineering
 - Tujuan: Membuat fitur baru yang relevan dan dapat membantu model memahami pola dalam data.
