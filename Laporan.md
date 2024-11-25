@@ -62,12 +62,15 @@ Berdasarkan hasil riset yang dilakukan oleh widodo [5], dalam mengamati pergerak
 - Tujuan: Mengatasi nilai yang terlalu ekstrem yang dapat memengaruhi performa model.
 - Pendekatan:
   - Z-Score: Menghapus data dengan Z-Score di luar ambang batas (misalnya, |Z| > 3).
-  - IQR (Interquartile Range): Menghapus nilai di luar rentang [Q1 - 1.5IQR, Q3 + 1.5IQR].
+  - IQR (Interquartile Range): Menghapus nilai di luar rentang [Q1 = -1.5, Q3 = 1.5].
 - Implementasi Code :
 
   `Q1 = df['Close_XRP'].quantile(0.25)`
+  
   `Q3 = df['Close_XRP'].quantile(0.75)`
+  
   `IQR = Q3 - Q1`
+  
   `df = df[~((df['Close_XRP'] < (Q1 - 1.5 * IQR)) | (df['Close_XRP'] > (Q3 + 1.5 * IQR)))]`
 
 ### 3. Feature Engineering
