@@ -89,6 +89,7 @@ Berdasarkan hasil riset yang dilakukan oleh widodo [5], dalam mengamati pergerak
 ### 4. Data Transformation
 - Tujuan: Mengubah skala data agar lebih sesuai untuk algoritma machine learning.
 - Pendekatan:
+  - Normalisasi Data: Data harga dinormalisasi menggunakan MinMaxScaler agar semua nilai berada dalam rentang [0, 1]. Hal ini membantu model LSTM untuk lebih cepat melakukan konvergensi selama pelatihan.
   - Min-Max Scaling: Mengubah skala data ke rentang [0, 1], digunakan untuk LSTM.
   - Standardization: Mengubah data menjadi distribusi dengan mean 0 dan standar deviasi 1.
 - Langkah Implementasi dalam project:
@@ -98,7 +99,22 @@ Berdasarkan hasil riset yang dilakukan oleh widodo [5], dalam mengamati pergerak
    df['Close_XRP_Normalized'] = scaler.fit_transform(df[['Close_XRP']])
    df['Close_USDT_Normalized'] = scaler.fit_transform(df[['Close_USDT']])
   ```
-### 5. Validasi Data
+
+### 5. Splitting Data
+- Tujuan: Membagi data menjadi data pelatihan dan pengujian untuk evaluasi model yang adil.
+- Pendekatan:
+   - Data dibagi dalam rasio 80:20 untuk pelatihan dan pengujian.
+   - Data time series harus dibagi dengan mempertahankan urutan waktu.
+   ```ruby
+   # Split data menjadi train-test
+   train_size = int(len(X_xrp) * 0.8)
+   X_xrp_train, X_xrp_test = X_xrp[:train_size], X_xrp[train_size:]
+   y_xrp_train, y_xrp_test = y_xrp[:train_size], y_xrp[train_size:] 
+   X_usdt_train, X_usdt_test = X_usdt[:train_size], X_usdt[train_size:]
+   y_usdt_train, y_usdt_test = y_usdt[:train_size], y_usdt[train_size:]
+   ```
+
+### 6. Validasi Data
 - Tujuan: Memastikan data bebas dari masalah setelah preprocessing.
 - Pendekatan:
   -- Cek kembali data setelah preprocessing untuk memastikan tidak ada nilai kosong, outlier, atau fitur yang hilang.
@@ -112,13 +128,7 @@ Berdasarkan hasil riset yang dilakukan oleh widodo [5], dalam mengamati pergerak
   ```
 
 # Modeling
-## Preprocessing Data:
-- Normalisasi Data: Data harga dinormalisasi menggunakan MinMaxScaler agar semua nilai berada dalam rentang [0, 1]. Hal ini membantu model LSTM untuk lebih cepat melakukan konvergensi selama pelatihan.
-- Time Series Dataset: Dataset disusun menjadi urutan waktu dengan menggunakan jendela waktu (window). Misalnya, data 30 hari terakhir digunakan untuk memprediksi harga pada hari berikutnya.
-
-## Pemisahan Data:
-- Training Set (80%): Data ini digunakan untuk melatih model.
-- Test Set (20%): Data ini digunakan untuk mengevaluasi kinerja model pada data yang belum pernah dilihat.
+<p align="justify">Pada tahap ini, model yang digunakan adalah Long Short-Term Memory (LSTM), salah satu jenis Recurrent Neural Network (RNN). LSTM dipilih karena kemampuannya dalam menangkap pola temporal dan hubungan jangka panjang pada data time series, seperti harga aset cryptocurrency. LSTM dirancang untuk mengatasi masalah vanishing gradient yang sering terjadi pada RNN klasik. Dengan menggunakan struktur internal yang terdiri dari "cell state" dan "gates", LSTM dapat mengontrol informasi mana yang harus diingat, diperbarui, atau dilupakan</p>
 
 ## Arsitektur Model LSTM:
 - Input Layer:
