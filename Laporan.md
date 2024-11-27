@@ -117,7 +117,7 @@ Berdasarkan hasil riset yang dilakukan oleh widodo [5], dalam mengamati pergerak
 ### 6. Validasi Data
 - Tujuan: Memastikan data bebas dari masalah setelah preprocessing.
 - Pendekatan:
-  -- Cek kembali data setelah preprocessing untuk memastikan tidak ada nilai kosong, outlier, atau fitur yang hilang.
+  - Cek kembali data setelah preprocessing untuk memastikan tidak ada nilai kosong, outlier, atau fitur yang hilang.
 - Langkah Implementasi:
   ```ruby
   # Periksa apakah ada nilai kosong
@@ -149,6 +149,30 @@ Berdasarkan hasil riset yang dilakukan oleh widodo [5], dalam mengamati pergerak
 - Evaluasi Model: Model diuji pada data test untuk menghitung Mean Squared Error (MSE) atau Root Mean Squared Error (RMSE) sebagai metrik kinerja.
 - Prediksi harga di masa depan dibandingkan dengan nilai aktual untuk mengevaluasi akurasi model.
 
+## Implementasi Kode dengan keras:
+```ruby
+from tensorflow.keras.callbacks import EarlyStopping
+# Callback Early Stopping untuk menghentikan pelatihan jika tidak ada peningkatan
+early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+
+# Fungsi untuk membuat model LSTM
+def build_lstm_model():
+    model = Sequential([
+        LSTM(50, return_sequences=True, input_shape=(look_back, 1)),
+        LSTM(50, return_sequences=False),
+        Dense(1)
+    ])
+    model.compile(optimizer='adam', loss='mean_squared_error')
+    return model
+
+# Model untuk XRP
+model_xrp = build_lstm_model()
+model_xrp.fit(X_xrp_train, y_xrp_train, epochs=100, batch_size=32, validation_data=(X_xrp_test, y_xrp_test), callbacks=[early_stopping], verbose=1)
+
+# Model untuk USDT
+model_usdt = build_lstm_model()
+model_usdt.fit(X_usdt_train, y_usdt_train, epochs=100, batch_size=32, validation_data=(X_usdt_test, y_usdt_test), callbacks=[early_stopping], verbose=1)
+```
 # Evaluation
 ## Metrik Evaluasi yang Digunakan
 - Mean Squared Error (MSE): Mengukur rata-rata kesalahan kuadrat antara nilai prediksi dan nilai aktual
