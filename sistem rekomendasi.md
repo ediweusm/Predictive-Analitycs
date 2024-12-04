@@ -2,41 +2,42 @@
 
 ## Domain Proyek
 <p align="justify"> 
-Pasar cryptocurrency telah mengalami pertumbuhan signifikan dalam beberapa tahun terakhir, hal ini menarik minat investor pada pasar yang sedang berkembang ini karena potensi pengembalian keuntungan yang tinggi dan mengambil manfaat dari diversifikasi portofolio aset. Salah satu masalah utama dalam investasi portofolio cryptocurrency adalah tingginya volatilitas dan risiko yang terkait dengan pasar ini. Cryptocurrency dikenal dengan fluktuasi harga yang tinggi, yang dapat menghasilkan keuntungan atau kerugian signifikan dalam waktu singkat [1]. Hal ini menyulitkan investor untuk menentukan alokasi aset yang optimal dalam portofolio mereka dan mengelola risiko secara efektif [2],[3]. Penelitian menunjukkan bahwa volatilitas tinggi pada cryptocurrency menjadi perhatian utama bagi investor, karena dapat menyebabkan kerugian signifikan dalam waktu singkat [1]. Volatilitas tinggi pada Bitcoin, misalnya, telah menyebabkan fluktuasi harga yang signifikan, sehingga sulit bagi investor untuk menentukan alokasi aset yang optimal dalam portofolio mereka [4]. Dari perubahan harga yang fluktuatif, terdapat stable coin yang memiliki harga relatif stabil terhadap US dollar, hal ini dapat memberikan potensi keuntungan perlindungan dari fluktuasi nilai aset crypto yang sangat tinggi. Naik turunnya nilai aset crypto yang beragam, memberikan gambaran bahwa beberapa pasangan crypto memiliki korelasi pergerakan harga yang negatif, artinya ketika satu crypto mengalami kenaikan, maka crypto pasangannya akan mengalami penurunan, salah satu pasangan crypto yang memiliki corelasi negatif adalah XRP dan USDT [5]. 
-Project ini menggunakan prediksi harga XRP yang dibandingkan dengan harga USDT pada saat ini, untuk memprediksi harga keduanya, menggunakan LSTM, kemudian dari prediksi harga keduanya, akan dihitung nilai Z-Score yang ada untuk memberikan saran, apakah aset XRP harus ditukarkan dengan aset USDT atau ditahan, demikian juga sebaliknya. 
-Dengan pendekatan ini, maka jumlah aset akan selalu mengalami kenaikan, meskipun jika nilai tukar aset terhadap US$ mengalami penurunan.
-</p>
-<br>
-Dari data nilai tukar XRP dan USDT harian yang didapat dari dataset Kaggle,maka dibuat prediksi harga di masa yang akan datang menggunakan algoritma LSTM. Hasil prediksi harga tersebut kemudian dianalisis nilai Z-Score antara keduanya, jika nilai Z-Score menunjukkan negatif terhadap pasangannya, maka diberikan saran penukaran (Trade), jika positif maka diberikan saran untuk ditahan (Hold)
+Pemilihan jalur karir merupakan salah satu keputusan penting yang dihadapi mahasiswa, terutama di era modern di mana persaingan kerja semakin ketat dan kebutuhan pasar terus berkembang. Menentukan karir yang sesuai dengan minat, kemampuan, dan pendidikan dapat menjadi tantangan besar, terutama ketika mahasiswa tidak memiliki panduan yang cukup untuk memahami pilihan yang tersedia [1]. Sistem rekomendasi karir hadir sebagai solusi inovatif untuk membantu mahasiswa dalam pengambilan keputusan ini[2]. Dengan memanfaatkan data seperti nilai akademik, minat, dan atribut personal lainnya, sistem ini dapat memberikan rekomendasi yang personal dan relevan, sehingga membantu mahasiswa memahami potensi karir yang sesuai dengan profil mereka[3].
+Berbagai penelitian telah menunjukkan manfaat sistem rekomendasi dalam domain pendidikan dan karir [4]. Teknik rekomendasi seperti Content-based Filtering dan Collaborative Filtering telah terbukti efektif dalam memberikan rekomendasi yang relevan dan meningkatkan pengalaman pengguna. Dalam konteks pendidikan, sistem rekomendasi dapat mengarahkan mahasiswa ke jalur karir yang sesuai berdasarkan pola preferensi dan atribut individu. Penelitian juga menunjukkan bahwa analisis data pendidikan dapat digunakan untuk memprediksi performa dan preferensi mahasiswa, yang kemudian dapat diintegrasikan ke dalam sistem rekomendasi.
+Melalui penerapan sistem rekomendasi karir, mahasiswa dapat mengakses daftar profesi yang sesuai dengan jurusan, nilai, dan preferensi mereka. Hal ini tidak hanya meningkatkan akurasi dalam pengambilan keputusan, tetapi juga memberikan panduan praktis yang membantu mereka menavigasi dunia kerja yang dinamis dan kompetitif.
 
 ## Business Understanding
-<p align="justify"> Perilaku perdagangan cryptocurrency paling umum dilakukan adalah dengan mengukur nilai tukar aset cryptocurrency terhadap mata uang fiat, baik dalam bentuk rupiah maupun dollar Amerika. Hal ini membuat banyak pelaku perdagangan cryptocurrency memanfaatkan volatilitas nilai tukar cryptocurrency untuk mendapatkan keuntungan jangka pendek. Sementara itu, teknologi cryptocurrency terus berkembang seiring dengan perkembangan teknologi internet, oleh karena itu peluang jangka panjang terhadap teknologi ini masih sangat terbuka.
-Banyak pelaku perdagangan cryptocurrency mengalami kerugian besar, meskipun tidak sedikit yang mendapatkan untung besar juga, karena perubahan nilai tukar cryptocurrency terhadap mata uang fiat yang sangat fluktuatif. Sementara itu secara keseluruhan, grafik nilai tukar cryptocurrency terus bergerak naik. <br>
-Dari analisa awal terhadap grafik pergerakan nilai tukar cryptocurrency, secara visual terlihat adanya hubungan antar masing-masing cryptocurrency. Pasangan cryptocurrency yang memiliki korelasi simpangan paling jauh memiliki arti bahwa sifat keduanya saling berlawanan, sehingga memiliki peluang terbesar untuk terus meningkatkan nilai aset yang dimiliki, dengan cara menukarkan aset cryptocurrency x terhadap aset cryptocurrency y dan sebaliknya. Jika aset x mengalami peningkatan nilai terhadap aset y, maka aset x harus dilepaskan untuk ditukar dengan aset y. Pertukaran dapat kembali dilakukan saat aset y nilainya meningkat terhadap aset x.
-</p>
-Berdasarkan hasil riset yang dilakukan oleh widodo [5], dalam mengamati pergerakan grafik nilai tukar asset crypto dan  melakukan analisis pergerakan menggunakan pearson correlation, terdapat korelasi negatif yang cukup antara asset XRP dan USDT. 
+<p align="justify"> Mahasiswa sering menghadapi tantangan dalam menentukan jalur karir yang sesuai dengan kemampuan, minat, dan latar belakang pendidikan mereka. Ketidaktahuan terhadap pilihan yang tersedia serta ketidakcocokan antara jurusan dan preferensi karir dapat menyebabkan pengambilan keputusan yang tidak optimal. Masalah ini diperparah dengan kurangnya panduan berbasis data yang dapat membantu mahasiswa memahami potensi karir berdasarkan profil mereka. Oleh karena itu, diperlukan sistem yang mampu memberikan rekomendasi personal dan relevan untuk membantu mahasiswa memilih jalur karir yang sesuai.
+Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-based Filtering dan Collaborative Filtering. Sistem ini menganalisis atribut seperti nilai akademik, jenis kelamin, dan hobi mahasiswa untuk memberikan daftar profesi yang sesuai. Pendekatan ini tidak hanya memudahkan mahasiswa dalam menentukan pilihan karir, tetapi juga membantu institusi pendidikan dalam mendukung pengembangan kompetensi mahasiswa sesuai kebutuhan pasar kerja.</p> 
 
 ## Problem Statements
-- Bagaimana menentukan rekomendasi apakah saat ini harus menukarkan Aset XRP menjadi USDT atau sebaliknya agar terhindar dari kerugian yang berlebih dari fluktuasi nilai tukar.
-- Bagaimana Mengukur nilai Z-Score dari hasil prediksi nilai dimasa yang akan datang.
+- Bagaimana sistem rekomendasi dapat membantu mencocokkan mahasiswa dengan profesi yang sesuai dengan jurusan dan preferensi mereka.
+- Bagaimana teknik Content-based Filtering dan Hybrid Collaborative Filtering dapat diintegrasikan untuk menghasilkan rekomendasi karir yang personal dan akurat.
 
 ### Goals
-- Membuat prediksi harga pasangan aset (XRP dan USDT) di masa yang akan datang berdasarkan harga masa lalu, dan harga saat ini.
-- Dari prediksi harga masa yang akan datang, kemudian diukur nilai Z-Score antara keduanya, jika nilainya negatif, maka berikan saran untuk penukaran, jika positif maka lakukan langkah tahan aset.
-- Sistem ini melakukan Prediksi dengan LSTM, sekaligus memberikan rekomendasi berdasarkan nilai Z-Score dari hasil prediksi algoritma LSTM.
-
+- Mengembangkan sistem rekomendasi karir berbasis data yang mampu memberikan rekomendasi personal dan relevan bagi mahasiswa.
+- Menerapkan teknik Content-based Filtering untuk mencocokkan profil individu dengan profesi yang relevan.
+- Menggunakan Collaborative Filtering untuk meningkatkan akurasi rekomendasi dengan mempertimbangkan pola preferensi dari mahasiswa lainnya.
+- Menyediakan output berupa daftar top-N profesi yang dapat membantu mahasiswa menentukan jalur karir yang sesuai.
+  
 ## Data Understanding
-- Mengambil dataset dari kaggle, di lokasi (https://www.kaggle.com/datasets/svaningelgem/crypto-currencies-daily-prices) khusus pada aset XRP dan USDT, berdasarkan riset yang telah dilakukan sebelumnya, bahwa kedua aset tersebut memiliki korelasi negatif yang cukup untuk menjadi pasangan pertukaran aset [5]
-- Jumlah data yang digunakan adalah XRP: 3.593 dan USDT: 2.822
-- Hanya kolom date dan close, yang digunakan untuk melakukan prediksi harga dimasa yang akan datang.
+- Mengambil dataset dari kaggle, di lokasi [Student Attitude and Behavior](https://www.kaggle.com/datasets/susanta21/student-attitude-and-behavior)
+- Jumlah Data: 235 entri.
+- Usability Level : 10.0
+- Kondisi Data: Dataset lengkap dengan informasi personal, akademik, dan preferensi mahasiswa.
 
 ### Variabel-variabel pada dataset tersebut adalah sebagai berikut:
-- ticker : Label untuk nama asset cryptocurrency [XRP,USDT]
-- date : merupakan tanggal data direkam yang bersifat harian.
-- open : merupakan harga pembukaan transaksi pertukaran nilai asset dalam US$ sesuai tanggal.
-- high : merupakan harga tertinggi dalam US$ harian sesuai tanggal.
-- low : merupakan harga terendah harian dalam US$ sesuai tanggal.
-- close : merupakan harga pada saat tanggal penutupan.
+- Certification Course: Sertifikasi tambahan yang diikuti mahasiswa.
+- Gender: Jenis kelamin mahasiswa.
+- Department: Jurusan (Sistem Informasi, Manajemen Bisnis, Akuntansi, dll.).
+- Hobbies: Hobi mahasiswa, seperti membaca atau bermain video game.
+- Prefer to Study In: Waktu belajar yang disukai mahasiswa.
+- Salary Expectation: Ekspektasi gaji.
+- Willingness to Pursue a Career Based on Their Degree: Persentase minat untuk bekerja sesuai jurusan.
+- Nilai Akademik (Kelas 10, Kelas 12, Kuliah):
+  - Nilai rata-rata dari semua mata pelajaran yang diambil pada kelas 10 dan 12.
+  - Nilai kuliah dianggap sebagai rata-rata kumulatif (Cumulative Grade Point Average, CGPA) dari semua mata kuliah.
+
  
 ## Data Preparation
 ### 1. Handling Missing Values
@@ -240,12 +241,10 @@ model_usdt.fit(X_usdt_train, y_usdt_train, epochs=100, batch_size=32, validation
 
 ### Referensi
 
-[1] D. G. Baur and T. Dimpfl, “The volatility of Bitcoin and its role as a medium of exchange and a store of value,” Empir. Econ., vol. 61, no. 5, pp. 2663–2683, 2021, doi: 10.1007/s00181-020-01990-5.
+[1] F. Firmahsyah and T. Gantini, “Penerapan Metode Content-Based Filtering Pada Sistem Rekomendasi Kegiatan Ekstrakulikuler (Studi Kasus di Sekolah ABC)”, JuTISI, vol. 2, no. 3, Dec. 2016.
 
-[2]	K. Schwab, K. Schwab, F. I. Revolution, and C. Directors, “Main ideas of the book To whom is this book indicated ? Overview of the book,” pp. 1–5, 2016.
+[2]	Habibi, Roni, and Muhammad Dzihan Albanna. "Analisis Sistem Rekomendasi Pada Job Recommendation Berdasarkan Profil Linkedin Menggunakan Cosine Similarity: ANALISIS SISTEM REKOMENDASI PADA JOB RECOMMENDATION BERDASARKAN PROFIL LINKEDIN MENGGUNAKAN COSINE SIMILARITY." Jurnal Teknik Informatika 14, no. 3 (2022): 118-122.
 
-[3]	C. W. Su, M. Qin, R. Tao, and M. Umar, “Financial implications of fourth industrial revolution: Can bitcoin improve prospects of energy investment?,” Technol. Forecast. Soc. Change, vol. 158, no. June, 2020, doi: 10.1016/j.techfore.2020.120178.
+[3]	Crismastiana Koloman, Raihan Maulana, Raisya Dwi Zahra Putri, and Wahyu Abadi Harahap, “Sistem Rekomendasi Pekerjaan di bidang IT Menggunakan Algoritma Content-Based Filtering”, jcsr-politama, vol. 1, no. 6, pp. 78–88, Dec. 2023.
 
-[4]	S. Zhang, M. Li, and C. Yan, “The Empirical Analysis of Bitcoin Price Prediction Based on Deep Learning Integration Method,” Comput. Intell. Neurosci., vol. 2022, 2022, doi: 10.1155/2022/1265837.
-
-[5] T. Winarti, E. Widodo, S. Handayni and A. Nugroho, "Utilizing Pearson Correlation Matrix to Identify Negative Correlations Among Cryptocurrencies," 2024 3rd International Conference on Creative Communication and Innovative Technology (ICCIT), Tangerang, Indonesia, 2024, pp. 1-7, doi: 10.1109/ICCIT62134.2024.10701159.
+[4]	D. Astuti, A. Pinandito, dan R. K. Dewi, “Sistem Rekomendasi Lowongan Pekerjaan Untuk Fresh Graduate Menggunakan Metode Weighted Product Berbasis Android”, J-PTIIK, vol. 1, no. 12, hlm. 1518–1525, Jul 2017.
