@@ -25,6 +25,9 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
 - Jumlah Data: 235 entri.
 - Usability Level : 10.0
 - Kondisi Data: Dataset lengkap dengan informasi personal, akademik, dan preferensi mahasiswa.
+- Dataset ini beberapa labelnya harus ditambahkan atau dimodifikasi untuk menyesuaikan kebutuhan Indonesia, seperti data Departemen dan Profesi dalam departement yang ada di Indonesia.
+- Untuk variabel nilai, dataset ini menggunakan nilai kelas 10, dianggap disesuaikan dengan Indonesia adalah nilai kelas 9.
+- Nilai pada jenjang perkuliahan, menggunakan skala 1-100. Artinya, input IPK yang diakui di Indonesia dengan skala 1-4, harus disesuaikan secara manual
 
 ### Variabel-variabel pada dataset tersebut adalah sebagai berikut:
 - Certification Course: Sertifikasi tambahan yang diikuti mahasiswa.
@@ -38,206 +41,248 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
   - Nilai rata-rata dari semua mata pelajaran yang diambil pada kelas 10 dan 12.
   - Nilai kuliah dianggap sebagai rata-rata kumulatif (Cumulative Grade Point Average, CGPA) dari semua mata kuliah.
 
- 
 ## Data Preparation
-### 1. Handling Missing Values
-- Tujuan: Memastikan tidak ada nilai kosong yang dapat memengaruhi proses pelatihan model.
-- Pendekatan:
-  - Drop Missing Values: 
-    - Jika jumlah data yang hilang kecil dan tidak signifikan, baris atau kolom yang mengandung nilai kosong dihapus.
-  - Imputasi: Jika data hilang signifikan, nilai yang hilang diisi dengan:
-    - Mean (rata-rata)
-    - Median (nilai tengah)
-    - Mode (nilai yang paling sering muncul)
-  - Implementasi Code :
-     ```ruby
-    df = df.dropna()
-     ```
-     ```ruby
-     # Kode ini tidak dipakai, hanya contoh jika ada data yang hilang, maka diisi dengan nilai mean
-    df['Close_XRP'].fillna(df['Close_XRP'].mean(), inplace=True)
-    df['Close_USDT'].fillna(df['Close_USDT'].mean(), inplace=True)
-     ```
-
-### 2. Handling Outlier
-- Tujuan: Mengatasi nilai yang terlalu ekstrem yang dapat memengaruhi performa model.
-- Pendekatan:
-  - Z-Score: Menghapus data dengan Z-Score di luar ambang batas (misalnya, |Z| > 3).
-  - IQR (Interquartile Range): Menghapus nilai di luar rentang [Q1 = -1.5, Q3 = 1.5].
-- Implementasi Code :
-
+### Teknik Data Preparation
+1. Cleaning: Membersihkan data dari kesalahan nama departemen dan mengonversi nilai dalam format yang konsisten.
    ```ruby
-   # Menggunakan IQR untuk menangani outlier
-  Q1 = df['close_XRP'].quantile(0.25)  
-  Q3 = df['close_XRP'].quantile(0.75)
-  IQR = Q3 - Q1
+    # Mengatasi nilai kosong
+    data.fillna('', inplace=True)
 
-  # Hapus outlier dari XRP
-  df = df[~((df['close_XRP'] < (Q1 - 1.5 * IQR)) | (df['close_XRP'] > (Q3 + 1.5 * IQR)))]
+    # Normalize willingness column and handle empty strings
+    data['willingness to pursue a career based on their degree  '] = (
+        data['willingness to pursue a career based on their degree  ']
+        .str.rstrip('%')
+        .fillna('0')
+        .astype(float)
+        / 100
+    )    
+
+    # Dalam dataset tidak menyediakan nama departemen sesuai Indonesia
+    # disini dilakukan penyesuaian nama agar lebih familier dengan user.
+    data['Department'] = data['Department'].replace({
+        'BCA': 'Teknologi Informasi',
+        'Commerce': 'Manajemen Bisnis',
+        'B.com Accounting and Finance ': 'Akuntansi dan Keuangan',
+        'B.com ISM': 'Sistem Informasi Manajemen'
+    })
    ```
-
-### 3. Feature Engineering
-- Tujuan: Membuat fitur baru yang relevan dan dapat membantu model memahami pola dalam data.
-- Pendekatan:
-  - Technical Indicators: Membuat indikator teknikal seperti moving average (SMA), exponential moving average (EMA), atau relative strength index (RSI).
-  - Lag Features: Menambahkan kolom harga sebelumnya sebagai prediktor.
-- Implementasi dalam project : Moving Average (7 hari)
-  ```ruby
-  df['SMA_7_XRP'] = df['close_XRP'].rolling(window=7).mean()
-  df['SMA_7_USDT'] = df['close_USDT'].rolling(window=7).mean()
-  ```
-
-### 4. Data Transformation
-- Tujuan: Mengubah skala data agar lebih sesuai untuk algoritma machine learning.
-- Pendekatan:
-  - Normalisasi Data: Data harga dinormalisasi menggunakan MinMaxScaler agar semua nilai berada dalam rentang [0, 1]. Hal ini membantu model LSTM untuk lebih cepat melakukan konvergensi selama pelatihan.
-  - Min-Max Scaling: Mengubah skala data ke rentang [0, 1], digunakan untuk LSTM.
-  - Standardization: Mengubah data menjadi distribusi dengan mean 0 dan standar deviasi 1.
-- Langkah Implementasi dalam project:
-  ```ruby
-   from sklearn.preprocessing import MinMaxScaler  
-   scaler = MinMaxScaler()
-   df['Close_XRP_Normalized'] = scaler.fit_transform(df[['Close_XRP']])
-   df['Close_USDT_Normalized'] = scaler.fit_transform(df[['Close_USDT']])
-  ```
-
-### 5. Splitting Data
-- Tujuan: Membagi data menjadi data pelatihan dan pengujian untuk evaluasi model yang adil.
-- Pendekatan:
-   - Data dibagi dalam rasio 80:20 untuk pelatihan dan pengujian.
-   - Data time series harus dibagi dengan mempertahankan urutan waktu.
+3. Encoding: Menggunakan Label Encoding untuk mengubah fitur kategorikal menjadi numerik.
    ```ruby
-   # Split data menjadi train-test
-   train_size = int(len(X_xrp) * 0.8)
-   X_xrp_train, X_xrp_test = X_xrp[:train_size], X_xrp[train_size:]
-   y_xrp_train, y_xrp_test = y_xrp[:train_size], y_xrp[train_size:] 
-   X_usdt_train, X_usdt_test = X_usdt[:train_size], X_usdt[train_size:]
-   y_usdt_train, y_usdt_test = y_usdt[:train_size], y_usdt[train_size:]
+   # Encode Gender and Hobbies
+    label_encoder = LabelEncoder()
+    data['Gender'] = label_encoder.fit_transform(data['Gender'])
+    data['Hobbies'] = label_encoder.fit_transform(data['hobbies'])
+    data['selected_department'] = label_encoder.fit_transform(data['Department'])
    ```
+4. Scaling: Normalisasi nilai akademik menggunakan Min-Max Scaling.
+   ```ruby
+    # Normalize numerical columns
+    scaler = MinMaxScaler()
+    data[['10th Mark', '12th Mark', 'college mark', 'Height(CM)', 'Weight(KG)']] = scaler.fit_transform(
+        data[['10th Mark', '12th Mark', 'college mark', 'Height(CM)', 'Weight(KG)']]
+    )
+    
+    # Penambahan profesi ini bisa variatif, karena di dataset tidak tersedia, maka ditambahkan manual disini
 
-### 6. Validasi Data
-- Tujuan: Memastikan data bebas dari masalah setelah preprocessing.
-- Pendekatan:
-  - Cek kembali data setelah preprocessing untuk memastikan tidak ada nilai kosong, outlier, atau fitur yang hilang.
-- Langkah Implementasi:
-  ```ruby
-  # Periksa apakah ada nilai kosong
-  print(df.isnull().sum())
-  
-  # Periksa dimensi data
-  print(df.shape)
-  ```
-
-# Modeling
-<p align="justify">Pada tahap ini, model yang digunakan adalah Long Short-Term Memory (LSTM), salah satu jenis Recurrent Neural Network (RNN). LSTM dipilih karena kemampuannya dalam menangkap pola temporal dan hubungan jangka panjang pada data time series, seperti harga aset cryptocurrency. LSTM dirancang untuk mengatasi masalah vanishing gradient yang sering terjadi pada RNN klasik. Dengan menggunakan struktur internal yang terdiri dari "cell state" dan "gates", LSTM dapat mengontrol informasi mana yang harus diingat, diperbarui, atau dilupakan</p>
-
-## Arsitektur Model LSTM:
-- Input Layer:
-  - Menerima data dalam bentuk urutan (sequence) dengan fitur tunggal (harga).
-- Hidden Layers:
-  - Dua lapisan LSTM digunakan untuk menangkap pola temporal.
-  - Dropout dapat ditambahkan (opsional) untuk mengurangi risiko overfitting.
-- Output Layer:
-  - Satu neuron pada lapisan akhir memprediksi nilai harga berikutnya.
-
-## Kompilasi Model:
-- Optimizer: Adam Optimizer digunakan karena adaptif terhadap perubahan gradien selama pelatihan.
-- Loss Function: Mean Squared Error (MSE) digunakan untuk mengukur perbedaan antara prediksi dan nilai aktual.
-
-## Pelatihan Model:
-- Model dilatih dengan beberapa epoch (misalnya, 20–50 epoch) untuk mencapai kinerja optimal.
-- Batch Size: Data diproses dalam batch kecil (misalnya, 32) untuk efisiensi pelatihan.
-- Evaluasi Model: Model diuji pada data test untuk menghitung Mean Squared Error (MSE) atau Root Mean Squared Error (RMSE) sebagai metrik kinerja.
-- Prediksi harga di masa depan dibandingkan dengan nilai aktual untuk mengevaluasi akurasi model.
-
-## Implementasi Kode dengan keras:
-```ruby
-from tensorflow.keras.callbacks import EarlyStopping
-# Callback Early Stopping untuk menghentikan pelatihan jika tidak ada peningkatan
-early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
-
-# Fungsi untuk membuat model LSTM
-def build_lstm_model():
-    model = Sequential([
-        LSTM(50, return_sequences=True, input_shape=(look_back, 1)),
-        LSTM(50, return_sequences=False),
-        Dense(1)
-    ])
-    model.compile(optimizer='adam', loss='mean_squared_error')
-    return model
-
-# Model untuk XRP
-model_xrp = build_lstm_model()
-model_xrp.fit(X_xrp_train, y_xrp_train, epochs=100, batch_size=32, validation_data=(X_xrp_test, y_xrp_test), callbacks=[early_stopping], verbose=1)
-
-# Model untuk USDT
-model_usdt = build_lstm_model()
-model_usdt.fit(X_usdt_train, y_usdt_train, epochs=100, batch_size=32, validation_data=(X_usdt_test, y_usdt_test), callbacks=[early_stopping], verbose=1)
-```
+    department_professions = {
+        "Teknologi Informasi": [
+            "Analis Data", "Pengembang Aplikasi", "Manajer Proyek IT",
+            "Administrator Basis Data", "Konsultan IT", "Insinyur Jaringan",
+            "Pengembang Web", "Spesialis Keamanan Siber", "Arsitek Sistem",
+            "Ilmuwan Data"
+        ],
+        "Manajemen Bisnis": [
+            "Manajer Pemasaran", "Analis Bisnis", "Manajer Operasi",
+            "Manajer Keuangan", "Konsultan Bisnis", "Pengusaha",
+            "Manajer Sumber Daya Manusia", "Spesialis Riset Pasar",
+            "Manajer Logistik", "Manajer Proyek"
+        ],
+        "Akuntansi dan Keuangan": [
+            "Akuntan Publik", "Auditor Internal", "Analis Keuangan",
+            "Manajer Keuangan", "Akuntan Perpajakan", "Konsultan Keuangan",
+            "Manajer Investasi", "Analis Risiko", "Akuntan Biaya",
+            "Manajer Kredit"
+        ],
+        "Sistem Informasi Manajemen": [
+            "Analis Sistem", "Manajer Proyek IT", "Administrator Sistem",
+            "Pengembang ERP", "Spesialis Data Warehouse", "Analis Bisnis IT",
+            "Manajer Layanan TI", "Konsultan IT", "Manajer Keamanan IT",
+            "Manajer Jaringan"
+        ]
+   ```
+6. Feature Selection: Memilih fitur penting seperti nilai akademik, hobi, dan jenis kelamin untuk digunakan dalam model.
+   ```ruby
+      # Feature Selection
+      selected_features = ['10th Mark', '12th Mark', 'college mark', 'Gender', 'Hobbies', 'selected_department']
+      print(f"Fitur yang dipilih untuk model: {selected_features}") 
+   ```
+## Modelling and Result
+### Sistem Rekomendasi
+  1. Content-based Filtering:
+     - Menggunakan cosine similarity untuk mencocokkan preferensi individu (seperti nilai dan hobi) dengan data yang ada.
+     - Memberikan rekomendasi berbasis profil pengguna.
+     - Menampilkan 5 Profesi teratas
+     ```ruby
+     def recommend_career_content_based(input_profile, top_n=5):
+         selected_features_cb = ['10th Mark', '12th Mark', 'college mark', 'Gender', 'Hobbies']
+         similarity = cosine_similarity(
+             [input_profile], 
+             data[selected_features_cb]
+         )
+         indices = similarity.argsort()[0][-top_n:]
+         departments = data.iloc[indices]['Department'].unique()
+     
+         professions = []
+         for department in departments:
+             professions.extend(department_professions.get(department, []))
+    
+         return professions[:top_n]
+     ```
+  2. Collaborative Filtering:
+     - Menggunakan algoritma Singular Value Decomposition (SVD) untuk menemukan pola preferensi berbasis data mahasiswa lain, dari pustaka surprise.
+     - Model dilatih dengan data preferensi mahasiswa terhadap jurusan.
+     - Collaborative Filtering memberikan rekomendasi berbasis pola mahasiswa lain.
+     - Karena dataset tidak terdapat item_id, maka item_id dibuat auto berdasarkan jumlah data unik.
+     ```ruby
+     # Prepare data for surprise library
+     data['user_id'] = range(len(data))
+     data['item_id'] = data['Department'].factorize()[0]
+     data_surprise = Dataset.load_from_df(data[['user_id', 'item_id', 'willingness to pursue a career based on their degree  ']], Reader(rating_scale=(0, 1)))
+      
+     # Train-test split
+     trainset, testset = train_test_split(data_surprise, test_size=0.2, random_state=42)
+      
+     # Train Collaborative Filtering model using SVD
+     model = SVD()
+     model.fit(trainset)
+       
+     def recommend_career_collaborative(user_id=None, top_n=5):
+        # Jika user_id tidak tersedia (cold start), gunakan rata-rata prediksi item
+        if user_id is None:
+            item_ids = data['item_id'].unique()
+            predictions = [
+                (item_id, model.predict(uid=None, iid=item_id, r_ui=None).est) 
+                for item_id in item_ids
+            ]
+        else:
+            # Predict ratings for existing user
+            item_ids = data['item_id'].unique()
+            predictions = [
+                (item_id, model.predict(user_id, item_id).est) 
+                for item_id in item_ids
+            ]
+        
+        # Sort predictions by estimated score
+        predictions = sorted(predictions, key=lambda x: x[1], reverse=True)[:top_n]
+    
+        # Map item_id to professions
+        recommended_professions = []
+        for item_id, _ in predictions:
+            department = data[data['item_id'] == item_id]['Department'].iloc[0]
+            recommended_professions.extend(department_professions.get(department, []))
+    
+        return recommended_professions[:top_n]
+     ```
+  3. Hybrid Combination
+     - Pada proyek ini, algoritma Hybrid Filtering adalah kombinasi dari Content-based Filtering dan Collaborative Filtering.
+     - Pendekatan hybrid ini memanfaatkan kelebihan kedua metode untuk memberikan rekomendasi yang lebih akurat dan relevan.
+     - Langkah-langkah Algoritma Hybrid:
+       - Langkah Pertama (Content-based Filtering):
+          - Rekomendasi jurusan dihasilkan berdasarkan atribut pengguna.
+       - Langkah Kedua (Collaborative Filtering):
+          - Dari hasil Content-based Filtering, Collaborative Filtering memprioritaskan jurusan dengan skor prediksi tertinggi.
+       - Output Final:
+          - Profesi yang relevan dengan jurusan yang direkomendasikan.
+     - Implementasi Kode :
+       ```ruby
+       def recommend_career_hybrid(input_profile, top_n=5):
+          recommendations_cb = recommend_career_content_based(input_profile, top_n)
+          cb_departments = []
+          for profession in recommendations_cb:
+              for department, professions in department_professions.items():
+                  if profession in professions:
+                      cb_departments.append(department)
+      
+          item_ids = data[data['Department'].isin(cb_departments)]['item_id'].unique()
+          predictions = [(item_id, model.predict(0, item_id).est) for item_id in item_ids]
+          predictions = sorted(predictions, key=lambda x: x[1], reverse=True)[:top_n]
+      
+          recommended_professions = []
+          for item_id, _ in predictions:
+              department = data[data['item_id'] == item_id]['Department'].iloc[0]
+              recommended_professions.extend(department_professions.get(department, []))
+      
+          return recommended_professions[:top_n]
+       ```
+     
 # Evaluation
 ## Metrik Evaluasi yang Digunakan
-- Mean Squared Error (MSE): Mengukur rata-rata kesalahan kuadrat antara nilai prediksi dan nilai aktual
-  - Interpretasi: Semakin kecil nilai MSE, semakin baik performa model, Sensitif terhadap outlier karena menghitung kuadrat dari kesalahan.
-- Root Mean Squared Error (RMSE): Akar kuadrat dari MSE, yang memberikan interpretasi langsung dalam skala yang sama dengan data asli.
-  - Interpretasi: RMSE lebih intuitif dibandingkan MSE karena dalam unit asli harga (USD), Digunakan untuk mengevaluasi tingkat deviasi prediksi dari nilai aktual.
-- Mean Absolute Error (MAE): Mengukur rata-rata kesalahan absolut antara nilai prediksi dan nilai aktual.
-  - Interpretasi: Lebih robust terhadap outlier dibandingkan MSE, Memberikan indikasi rata-rata kesalahan dalam unit asli data.
+1. Evaluasi Collaborative Filtering:
+   - RMSE (Root Mean Squared Error): Mengukur kesalahan prediksi rata-rata pada rating.
+   - MAE (Mean Absolute Error): Mengukur kesalahan prediksi absolut rata-rata pada rating.
+    
+2. Evaluasi Content-based Filtering:
+   - Precision: Proporsi rekomendasi yang benar dari semua yang direkomendasikan.
+   - Recall: Proporsi rekomendasi yang benar dari semua yang relevan.
+    
+3. Evaluasi Hybrid Model:
+   - Sama seperti Content-based Filtering, tetapi menggunakan hasil dari Hybrid Filtering.
 
 ## Hasil pengujian terhadap model adalah sebagai berikut :
-### Metrics XRP
-- Mean Squared Error (MSE): 0.00185
-  - MSE mengukur rata-rata kesalahan kuadrat antara nilai prediksi dan nilai aktual.
-  - Nilai 0.00185 menunjukkan bahwa model memiliki tingkat kesalahan kuadrat rata-rata yang kecil.
-  - Karena MSE sensitif terhadap outlier, kesalahan besar pada satu prediksi akan lebih memengaruhi hasil.
-- Root Mean Squared Error (RMSE): 0.04306
-  - RMSE adalah akar kuadrat dari MSE, memberikan kesalahan rata-rata dalam unit asli (normalisasi).
-  - Nilai 0.04306 menunjukkan bahwa prediksi rata-rata meleset sekitar 4.3% dari skala normalisasi data XRP.
-- Mean Absolute Error (MAE): 0.03140
-  - MAE mengukur rata-rata kesalahan absolut antara prediksi dan nilai aktual.
-  - Nilai 0.03140 berarti bahwa, rata-rata, prediksi model meleset sekitar 3.1% dalam skala normalisasi.
-- Kesimpulan XRP:
-  - Model memiliki performa yang cukup baik dengan kesalahan prediksi rata-rata relatif kecil (sekitar 3.1–4.3%).
-  -- Namun, MSE menunjukkan bahwa kesalahan besar (jika ada) memengaruhi hasil lebih signifikan.
+### Collaborative Filtering
+1. Hasil Evaluasi:
+   - RMSE (Root Mean Squared Error): 0.226
+      - Mengukur rata-rata perbedaan kuadrat antara nilai prediksi dan nilai aktual.
+      - Semakin kecil RMSE, semakin baik model.
+   - MAE (Mean Absolute Error): 0.172
+      - Mengukur rata-rata perbedaan absolut antara nilai prediksi dan nilai aktual.
+      - Semakin kecil MAE, semakin baik model.
+2. Analisis:
+   - Kinerja: Nilai RMSE dan MAE menunjukkan bahwa prediksi model cukup akurat, dengan kesalahan prediksi kecil.
+   - Konteks: Hasil ini menunjukkan Collaborative Filtering bekerja dengan baik dalam memprediksi preferensi terhadap jurusan berbasis pola data pengguna lain.
 
-### Metrics USDT
-- Mean Squared Error (MSE): 0.00000
-  - Nilai 0.00000 menunjukkan bahwa model memiliki kesalahan kuadrat rata-rata yang sangat kecil, mendekati nol.
-  - Hal ini mengindikasikan prediksi sangat dekat dengan nilai aktual pada skala normalisasi.
-- Root Mean Squared Error (RMSE): 0.00062
-  - RMSE sebesar 0.00062 menunjukkan bahwa prediksi rata-rata meleset kurang dari 0.1% dari skala normalisasi data USDT.
-- Mean Absolute Error (MAE): 0.00052
-  - MAE sebesar 0.00052 berarti rata-rata kesalahan prediksi hanya sekitar 0.05%, menunjukkan performa prediksi yang sangat akurat.
-- Kesimpulan USDT:
-  - Model memiliki performa luar biasa dengan kesalahan prediksi yang hampir tidak signifikan.
-  - Hasil ini mungkin menunjukkan bahwa pola harga USDT lebih mudah diprediksi oleh model dibandingkan XRP.
- 
-### Perbandingan XRP dan USDT
-- MSE:
-  - XRP memiliki MSE lebih besar (0.00185) dibandingkan USDT (0.00000), menunjukkan model lebih kesulitan dalam memprediksi harga XRP.
-- RMSE dan MAE:
-  - XRP memiliki kesalahan rata-rata yang lebih besar (RMSE: 0.04306, MAE: 0.03140) dibandingkan USDT (RMSE: 0.00062, MAE: 0.00052).
-  - Hal ini menunjukkan bahwa prediksi harga USDT lebih stabil dan akurat dibandingkan XRP.
-- Stabilitas Prediksi:
-  - Model lebih efektif dalam memprediksi USDT, kemungkinan karena pola harga USDT lebih linear atau lebih sedikit volatil dibandingkan XRP.
+### Content-based Filtering
+1. Hasil Evaluasi:
+   - Precision: 0.502 (50.2%)
+      - Proporsi rekomendasi yang benar (relevan) dari semua rekomendasi yang dihasilkan.
+      - Semakin tinggi precision, semakin baik model memberikan rekomendasi yang tepat.
+   - Recall: 0.251 (25.1%)
+      - Proporsi rekomendasi yang benar (relevan) dari semua opsi yang seharusnya direkomendasikan.
+      - Semakin tinggi recall, semakin baik cakupan model.
+2. Analisis:
+   - Precision Tinggi, Recall Rendah:
+      - Model dapat memberikan rekomendasi yang relevan, tetapi cakupan rekomendasi (jumlah opsi relevan yang terjaring) masih rendah.
+   - Konteks:
+      - Content-based Filtering bergantung pada atribut pengguna (nilai akademik, hobi) sehingga cakupan rekomendasi terbatas pada data yang serupa.
 
-### Makna Z-Score untuk XRP dan USDT
-- Menganalisis Relasi:
-  - Z-Score membantu memahami bagaimana harga XRP dan USDT berubah relatif terhadap distribusi mereka.
-  - Jika Z-Score XRP tinggi (+ve) dan USDT rendah (-ve), ada kemungkinan hubungan negatif di antara mereka.
-- Mengidentifikasi Outlier:
-  - Harga dengan ∣Z∣>2 dianggap outlier. Ini penting untuk memahami volatilitas harga.
-- Rekomendasi Perdagangan:
-  - Ketika Z-Score XRP jauh lebih tinggi dari rata-rata (+ve) dan USDT jauh lebih rendah (-ve), pertukaran XRP ke USDT mungkin menguntungkan.
-  - Sebaliknya, jika Z-Score XRP rendah (-ve) dan USDT tinggi (+ve), pertukaran USDT ke XRP dapat dipertimbangkan.
+### Hybrid Model
+1. Hasil Evaluasi:
+   - Precision: 0.285 (28.5%)
+   - Recall: 0.143 (14.3%)
+2. Analisis:
+   - Precision dan Recall Lebih Rendah Dibanding Content-based Filtering:
+   - Kombinasi Content-based dan Collaborative Filtering menghasilkan rekomendasi yang kurang spesifik, sehingga precision dan recall menurun.
+3. Konteks:
+   - Hybrid Filtering memperluas cakupan rekomendasi (memasukkan pola pengguna lain), tetapi menurunkan spesifisitas rekomendasi untuk profil tertentu.
 
 ## Kesimpulan
-- Model dapat menghasilkan rekomendasi yang jelas terkait kapan harus ditukar dan kapan harus di tahan untuk pasangan kedua mata uang crypto, dengan mempertimbangkan nilai Z-Score antar keduanya.
-- Dengan cara ini, meskipun nilai tukar terhadap mata uang fiat harga cryptocurrency mengalami penurunan, tetapi total asset crypto akan terus mengalami kenaikan, dengan menggunakan pertukaran antar crypto yang memiliki korelasi negatif.
-- Investasi dalam teknology cryptocurrency memiliki resiko yang tinggi, terkait fluktuasi harga nilai tukar yang sangat volatile, tetapi yang perlu diingat adalah bahwa teknologi cryptocurrency belum mengalami fase mass adoption, teknologi ini masih bersifat prototype, jika suatu saat cryptocurrency sudah diadopsi secara massal, maka aset yang kita miliki akan memberikan nilai return yang sangat baik.
+1. Collaborative Filtering:
+   - Model ini menunjukkan hasil terbaik dalam hal kesalahan prediksi (RMSE dan MAE rendah).
+   - Cocok untuk memprediksi relevansi jurusan berbasis pola data pengguna lain.
+2. Content-based Filtering:
+   - Precision tinggi menunjukkan model memberikan rekomendasi yang relevan.
+   - Namun, cakupan rendah (Recall rendah) menunjukkan keterbatasan model pada data yang serupa.
+3. Hybrid Model:
+   - Kombinasi ini menunjukkan kinerja yang lebih rendah dibanding model lain, mungkin karena konflik antara pola Content-based dan Collaborative Filtering.
+   - Namun, Hybrid masih relevan untuk mengatasi masalah cold start dan diversifikasi rekomendasi.
 
 ## Saran
-- Meskipun secara teori, sistem rekomendasi ini menguntungkan, tetapi investasi ini cukup beresiko, oleh karena itu "jangan tempatkan aset hanya dalam satu keranjang saja". Investasi crypto hanya sifatnya diversifikasi dari instrument aset yang lain.
-- Karena aset cryptocurrency diperdagangkan dalam varian yang sangat banyak, dengan frekuensi transaksi yang sangat tinggi, maka variabel yang digunakan  untuk pengujian algoritma dapat ditambahkan dengan aspek yang lain. Misalnya volume perdagangan dan isyu seputar teknologi dan kebijakan internasional terkait cryptocurrency. 
+1. Collaborative Filtering:
+   - Mencoba menggunakan algoritma yang lebih kompleks (misalnya, kNN atau Matrix Factorization lebih lanjut).
+2. Content-based Filtering:
+   - Lakukan penambahan fitur (misalnya, preferensi mahasiswa terhadap profesi) untuk meningkatkan cakupan (Recall).
+3. Hybrid Model:
+   - Lakukan perbaikan keseimbangan antara Content-based dan Collaborative Filtering, misalnya dengan memberikan bobot berbeda pada kedua pendekatan.
 
 ### Referensi
 
