@@ -21,25 +21,98 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
 - Menyediakan output berupa daftar top-N profesi yang dapat membantu mahasiswa menentukan jalur karir yang sesuai.
   
 ## Data Understanding
-- Mengambil dataset dari kaggle, di lokasi [Student Attitude and Behavior](https://www.kaggle.com/datasets/susanta21/student-attitude-and-behavior)
+- Mengambil dataset dari kaggle, di lokasi [Student Attitude and Behavior](https://www.kaggle.com/datasets/susanta21/student-attitude-and-behavior) https://www.kaggle.com/datasets/susanta21/student-attitude-and-behavior
 - Jumlah Data: 235 entri.
-- Usability Level : 10.0
+- Jumlah Kolom : 19 kolom.
+- Usability Level : 10.0 (berdasarkan rating kaggle)
 - Kondisi Data: Dataset lengkap dengan informasi personal, akademik, dan preferensi mahasiswa.
 - Dataset ini beberapa labelnya harus ditambahkan atau dimodifikasi untuk menyesuaikan kebutuhan Indonesia, seperti data Departemen dan Profesi dalam departement yang ada di Indonesia.
 - Untuk variabel nilai, dataset ini menggunakan nilai kelas 10, dianggap disesuaikan dengan Indonesia adalah nilai kelas 9.
 - Nilai pada jenjang perkuliahan, menggunakan skala 1-100. Artinya, input IPK yang diakui di Indonesia dengan skala 1-4, harus disesuaikan secara manual
 
-### Variabel-variabel pada dataset tersebut adalah sebagai berikut:
-- Certification Course: Sertifikasi tambahan yang diikuti mahasiswa.
-- Gender: Jenis kelamin mahasiswa.
-- Department: Jurusan (Sistem Informasi, Manajemen Bisnis, Akuntansi, dll.).
-- Hobbies: Hobi mahasiswa, seperti membaca atau bermain video game.
-- Prefer to Study In: Waktu belajar yang disukai mahasiswa.
-- Salary Expectation: Ekspektasi gaji.
-- Willingness to Pursue a Career Based on Their Degree: Persentase minat untuk bekerja sesuai jurusan.
-- Nilai Akademik (Kelas 10, Kelas 12, Kuliah):
-  - Nilai rata-rata dari semua mata pelajaran yang diambil pada kelas 10 dan 12.
-  - Nilai kuliah dianggap sebagai rata-rata kumulatif (Cumulative Grade Point Average, CGPA) dari semua mata kuliah.
+### Fitur atau Variable pada dataset 
+  1. Certification Course
+     - Tipe Data: Kategorikal (Ya/No)
+     - Deskripsi: Menunjukkan apakah individu mengikuti kursus sertifikasi tambahan selain kuliah.
+  2. Gender
+     - Tipe Data: Kategorikal (Male/Female)
+     - Deskripsi: Menunjukkan jenis kelamin individu.
+  3. Department
+     - Tipe Data: Kategorikal (contoh: BCA)
+     - Deskripsi: Menunjukkan jurusan atau program studi mahasiswa, data ini akan disesuaikan dengan jurusan di Indonesia
+  4. Height (CM)
+     - Tipe Data: Numerik (integer)
+     - Deskripsi: Tinggi badan individu dalam sentimeter.
+  5. Weight (KG)
+     - Tipe Data: Numerik (integer)
+     - Deskripsi: Berat badan individu dalam kilogram.
+  6. 10th Mark
+     - Tipe Data: Numerik (persentase)
+     - Deskripsi: Nilai akademik individu saat kelas 10 dalam persentase.
+  7. 12th Mark
+     - Tipe Data: Numerik (persentase)
+     - Deskripsi: Nilai akademik individu saat kelas 12 dalam persentase.
+  8. College Mark
+     - Tipe Data: Numerik (persentase)
+     - Deskripsi: Nilai akademik individu di perguruan tinggi dalam persentase.
+  9. Hobbies
+     - Tipe Data: Kategorikal (contoh: Video Games, Cinema)
+     - Deskripsi: Menunjukkan hobi individu.
+  10. Daily Studying Time
+      - Tipe Data: Kategorikal (contoh: 0 - 30 minute, 30 - 60 minute)
+      - Deskripsi: Durasi belajar harian individu.
+  11. Prefer to Study In
+      - Tipe Data: Kategorikal (contoh: Morning)
+      - Deskripsi: Waktu yang disukai individu untuk belajar (pagi, siang, malam).
+  12. Salary Expectation
+      - Tipe Data: Numerik (contoh: 40000)
+      - Deskripsi: Ekspektasi gaji individu setelah lulus.
+  13. Do You Like Your Degree?
+      - Tipe Data: Kategorikal (Ya/No)
+      - Deskripsi: Menunjukkan apakah individu menyukai program studi mereka.
+  14. Willingness to Pursue a Career Based on Their Degree
+      - Tipe Data: Numerik (persentase)
+      - Deskripsi: Persentase minat individu untuk bekerja sesuai jurusannya.
+  15. Social Media & Video
+      - Tipe Data: Kategorikal (contoh: 1.30 - 2 hour)
+      - Deskripsi: Waktu yang dihabiskan individu untuk media sosial dan menonton video setiap hari.
+  16. Travelling Time
+      - Tipe Data: Kategorikal (contoh: 30 - 60 minutes)
+      - Deskripsi: Waktu perjalanan harian individu.
+  17. Stress Level
+      - Tipe Data: Kategorikal (contoh: Bad)
+      - Deskripsi: Tingkat stres individu (baik, sedang, buruk).
+  18. Financial Status
+      - Tipe Data: Kategorikal (contoh: Bad)
+      - Deskripsi: Kondisi keuangan individu.
+  19. Part-Time Job
+      - Tipe Data: Kategorikal (Ya/No)
+      - Deskripsi: Menunjukkan apakah individu memiliki pekerjaan paruh waktu.
+     
+### Outlier Data
+- Fitur yang diseleksi dan potensi outlier :
+  -  10th Mark, Numerik, Potensi memiliki outlier.
+  -  12th Mark, Numerik, Potensi memiliki outlier.
+  -  college mark, Numerik, Potensi memiliki outlier.
+  -  Untuk fitur kategorikal, hanya perlu memvalidasi data untuk memastikan tidak ada nilai yang salah ketik atau tidak relevan.
+- Hasil deteksi outlier pada fitur numerik 10th Mark, 12th Mark, dan college mark adalah sebagai berikut:
+  - 10th Mark:
+    - Batas bawah (Lower Bound): 45.625
+    - Batas atas (Upper Bound): 110.625
+    - Jumlah Outlier: 4
+    - Outliers: [40.0, 7.4, 45.0, 45.0]
+  - 12th Mark:
+    - Batas bawah (Lower Bound): 36.0
+    - Batas atas (Upper Bound): 100.0
+    - Jumlah Outlier: 0
+    - Outliers: Tidak ada.
+  - college mark:
+    - Batas bawah (Lower Bound): 30.0
+    - Batas atas (Upper Bound): 110.0
+    - Jumlah Outlier: 5
+    - Outliers: [3.0, 1.0, 7.5, 12.0, 2.0
+- Penanganan Outlier :
+  -  Menghapus data yang termasuk outlier berdasarkan batas bawah dan atas dari IQR.
 
 ## Data Preparation
 ### Teknik Data Preparation
