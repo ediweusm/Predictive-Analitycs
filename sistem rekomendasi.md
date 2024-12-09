@@ -190,11 +190,31 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
       print(f"Fitur yang dipilih untuk model: {selected_features}") 
    ```
 ## Modelling and Result
+### Uji Coba Data
+    
+    Masukkan informasi berikut untuk merekomendasikan karier yang sesuai:
+    Nilai Akhir Kelas 10 (dalam skala 0-100): 98
+    Nilai Akhir Kelas 12 (dalam skala 0-100): 89
+    Masukkan nilai GPA kuliah Anda (dalam skala 1-4): 4
+    Jenis Kelamin Anda (Laki-laki[1]/Perempuan[0]): 1
+    Daftar Hobi:
+    1. Video Games
+    2. Cinema
+    3. Reading books
+    4. Sports
+    Masukkan nomor hobi yang ingin Anda pilih: 2
+    Anda memilih hobi: Cinema
+    
 ### Sistem Rekomendasi
   1. Content-based Filtering:
      - Menggunakan cosine similarity untuk mencocokkan preferensi individu (seperti nilai dan hobi) dengan data yang ada.
      - Memberikan rekomendasi berbasis profil pengguna.
      - Menampilkan 5 Profesi teratas
+        1. Analis Sistem
+        2. Manajer Proyek IT
+        3. Administrator Sistem
+        4. Pengembang ERP
+        5. Spesialis Data Warehouse
      ```ruby
      def recommend_career_content_based(input_profile, top_n=5):
          selected_features_cb = ['10th Mark', '12th Mark', 'college mark', 'Gender', 'Hobbies']
@@ -211,11 +231,18 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
     
          return professions[:top_n]
      ```
+     
   2. Collaborative Filtering:
      - Menggunakan algoritma Singular Value Decomposition (SVD) untuk menemukan pola preferensi berbasis data mahasiswa lain, dari pustaka surprise.
      - Model dilatih dengan data preferensi mahasiswa terhadap jurusan.
      - Collaborative Filtering memberikan rekomendasi berbasis pola mahasiswa lain.
      - Karena dataset tidak terdapat item_id, maka item_id dibuat auto berdasarkan jumlah data unik.
+     - 5 Profesi Teratas
+         1. Manajer Pemasaran
+         2. Analis Bisnis
+         3. Manajer Operasi
+         4. Manajer Keuangan
+         5. Konsultan Bisnis
      ```ruby
      # Prepare data for surprise library
      data['user_id'] = range(len(data))
@@ -266,6 +293,11 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
           - Dari hasil Content-based Filtering, Collaborative Filtering memprioritaskan jurusan dengan skor prediksi tertinggi.
        - Output Final:
           - Profesi yang relevan dengan jurusan yang direkomendasikan.
+             1. Analis Sistem
+             2. Manajer Proyek IT
+             3. Administrator Sistem
+             4. Pengembang ERP
+             5. Spesialis Data Warehouse
      - Implementasi Kode :
        ```ruby
        def recommend_career_hybrid(input_profile, top_n=5):
