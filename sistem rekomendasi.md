@@ -94,6 +94,7 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
   -  10th Mark, Numerik, Potensi memiliki outlier.
   -  12th Mark, Numerik, Potensi memiliki outlier.
   -  college mark, Numerik, Potensi memiliki outlier.
+  -  willingness, Numerik, Potensi memiliki outlier.
   -  Untuk fitur kategorikal, hanya perlu memvalidasi data untuk memastikan tidak ada nilai yang salah ketik atau tidak relevan.
 - Hasil deteksi outlier pada fitur numerik 10th Mark, 12th Mark, dan college mark adalah sebagai berikut:
   - 10th Mark:
@@ -110,19 +111,23 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
     - Batas bawah (Lower Bound): 30.0
     - Batas atas (Upper Bound): 110.0
     - Jumlah Outlier: 5
-    - Outliers: [3.0, 1.0, 7.5, 12.0, 2.0
+    - Outliers: [3.0, 1.0, 7.5, 12.0, 2.0]
+  - willingness
+    - Batas bawah : 0.7
+    - Batas atas : 1.0
+    - Outliers: Tidak ada.
 - Penanganan Outlier :
-  -  Menghapus data yang termasuk outlier berdasarkan batas bawah dan atas dari IQR.
+  -  Mendeteksi outlier dari numerikal selected feature, dan jika ada outlier akan direplace dengan nilai Median
 
 ## Data Preparation
 ### Teknik Data Preparation
-1. Cleaning: Membersihkan data dari kesalahan nama departemen dan mengonversi nilai dalam format yang konsisten.
+1. Cleaning: mereplace data kosong, mengubah nilai % menjadi angka, mengubah nama departemen.
    ```ruby
     # Mengatasi nilai kosong
     data.fillna('', inplace=True)
 
     # Normalize willingness column and handle empty strings
-    data['willingness to pursue a career based on their degree  '] = (
+    data['willingness'] = (
         data['willingness to pursue a career based on their degree  ']
         .str.rstrip('%')
         .fillna('0')
@@ -185,8 +190,8 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
    ```
 6. Feature Selection: Memilih fitur penting seperti nilai akademik, hobi, dan jenis kelamin untuk digunakan dalam model.
    ```ruby
-      # Feature Selection
-      selected_features = ['10th Mark', '12th Mark', 'college mark', 'Gender', 'Hobbies', 'selected_department']
+      # Feature Selection   
+      selected_features = ['10th Mark', '12th Mark', 'college mark', 'Gender', 'hobbies', 'Department','willingness']
       print(f"Fitur yang dipilih untuk model: {selected_features}") 
    ```
 ## Modelling and Result
@@ -206,132 +211,23 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
     Anda memilih hobi: Cinema
     
 ### Sistem Rekomendasi
-  1. Content-based Filtering:
-     - Menggunakan cosine similarity untuk mencocokkan preferensi individu (seperti nilai dan hobi) dengan data yang ada.
-     - Memberikan rekomendasi berbasis profil pengguna.
-     - Menampilkan 5 Profesi teratas
-        1. Analis Sistem
-        2. Manajer Proyek IT
-        3. Administrator Sistem
-        4. Pengembang ERP
-        5. Spesialis Data Warehouse
-     ```ruby
-     def recommend_career_content_based(input_profile, top_n=5):
-         selected_features_cb = ['10th Mark', '12th Mark', 'college mark', 'Gender', 'Hobbies']
-         similarity = cosine_similarity(
-             [input_profile], 
-             data[selected_features_cb]
-         )
-         indices = similarity.argsort()[0][-top_n:]
-         departments = data.iloc[indices]['Department'].unique()
-     
-         professions = []
-         for department in departments:
-             professions.extend(department_professions.get(department, []))
-    
-         return professions[:top_n]
-     ```
-     
-  2. Collaborative Filtering:
-     - Menggunakan algoritma Singular Value Decomposition (SVD) untuk menemukan pola preferensi berbasis data mahasiswa lain, dari pustaka surprise.
-     - Model dilatih dengan data preferensi mahasiswa terhadap jurusan.
-     - Collaborative Filtering memberikan rekomendasi berbasis pola mahasiswa lain.
-     - Karena dataset tidak terdapat item_id, maka item_id dibuat auto berdasarkan jumlah data unik.
-     - 5 Profesi Teratas
-         1. Manajer Pemasaran
-         2. Analis Bisnis
-         3. Manajer Operasi
-         4. Manajer Keuangan
-         5. Konsultan Bisnis
-     ```ruby
-     # Prepare data for surprise library
-     data['user_id'] = range(len(data))
-     data['item_id'] = data['Department'].factorize()[0]
-     data_surprise = Dataset.load_from_df(data[['user_id', 'item_id', 'willingness to pursue a career based on their degree  ']], Reader(rating_scale=(0, 1)))
-      
-     # Train-test split
-     trainset, testset = train_test_split(data_surprise, test_size=0.2, random_state=42)
-      
-     # Train Collaborative Filtering model using SVD
-     model = SVD()
-     model.fit(trainset)
-       
-     def recommend_career_collaborative(user_id=None, top_n=5):
-        # Jika user_id tidak tersedia (cold start), gunakan rata-rata prediksi item
-        if user_id is None:
-            item_ids = data['item_id'].unique()
-            predictions = [
-                (item_id, model.predict(uid=None, iid=item_id, r_ui=None).est) 
-                for item_id in item_ids
-            ]
-        else:
-            # Predict ratings for existing user
-            item_ids = data['item_id'].unique()
-            predictions = [
-                (item_id, model.predict(user_id, item_id).est) 
-                for item_id in item_ids
-            ]
-        
-        # Sort predictions by estimated score
-        predictions = sorted(predictions, key=lambda x: x[1], reverse=True)[:top_n]
-    
-        # Map item_id to professions
-        recommended_professions = []
-        for item_id, _ in predictions:
-            department = data[data['item_id'] == item_id]['Department'].iloc[0]
-            recommended_professions.extend(department_professions.get(department, []))
-    
-        return recommended_professions[:top_n]
-     ```
-  3. Hybrid Combination
-     - Pada proyek ini, algoritma Hybrid Filtering adalah kombinasi dari Content-based Filtering dan Collaborative Filtering.
-     - Pendekatan hybrid ini memanfaatkan kelebihan kedua metode untuk memberikan rekomendasi yang lebih akurat dan relevan.
-     - Langkah-langkah Algoritma Hybrid:
-       - Langkah Pertama (Content-based Filtering):
-          - Rekomendasi jurusan dihasilkan berdasarkan atribut pengguna.
-       - Langkah Kedua (Collaborative Filtering):
-          - Dari hasil Content-based Filtering, Collaborative Filtering memprioritaskan jurusan dengan skor prediksi tertinggi.
-       - Output Final:
-          - Profesi yang relevan dengan jurusan yang direkomendasikan.
-             1. Analis Sistem
-             2. Manajer Proyek IT
-             3. Administrator Sistem
-             4. Pengembang ERP
-             5. Spesialis Data Warehouse
-     - Implementasi Kode :
-       ```ruby
-       def recommend_career_hybrid(input_profile, top_n=5):
-          recommendations_cb = recommend_career_content_based(input_profile, top_n)
-          cb_departments = []
-          for profession in recommendations_cb:
-              for department, professions in department_professions.items():
-                  if profession in professions:
-                      cb_departments.append(department)
-      
-          item_ids = data[data['Department'].isin(cb_departments)]['item_id'].unique()
-          predictions = [(item_id, model.predict(0, item_id).est) for item_id in item_ids]
-          predictions = sorted(predictions, key=lambda x: x[1], reverse=True)[:top_n]
-      
-          recommended_professions = []
-          for item_id, _ in predictions:
-              department = data[data['item_id'] == item_id]['Department'].iloc[0]
-              recommended_professions.extend(department_professions.get(department, []))
-      
-          return recommended_professions[:top_n]
-       ```
-     
+## Collaborative Filtering:
+   - Menggunakan algoritma Singular Value Decomposition (SVD) untuk menemukan pola preferensi berbasis data mahasiswa lain, dari pustaka surprise.
+   - Model dilatih dengan data preferensi mahasiswa terhadap jurusan.
+   - Collaborative Filtering memberikan rekomendasi berbasis pola mahasiswa lain.
+   - Karena dataset tidak terdapat item_id, maka item_id dibuat auto berdasarkan jumlah data unik.
+   - 5 Profesi Teratas
+       1. Manajer Pemasaran
+       2. Analis Bisnis
+       3. Manajer Operasi
+       4. Manajer Keuangan
+       5. Konsultan Bisnis
+
 # Evaluation
 ## Metrik Evaluasi yang Digunakan
-1. Evaluasi Collaborative Filtering:
-   - RMSE (Root Mean Squared Error): Mengukur kesalahan prediksi rata-rata pada rating.
-   - MAE (Mean Absolute Error): Mengukur kesalahan prediksi absolut rata-rata pada rating.
-    
-2. Evaluasi Content-based Filtering:
-   - Precision: Proporsi rekomendasi yang benar dari semua yang direkomendasikan.
-   - Recall: Proporsi rekomendasi yang benar dari semua yang relevan.
-    
-3. Evaluasi Hybrid Model:
-   - Sama seperti Content-based Filtering, tetapi menggunakan hasil dari Hybrid Filtering.
+### Evaluasi Collaborative Filtering:
+  - RMSE (Root Mean Squared Error): Mengukur kesalahan prediksi rata-rata pada rating.
+  - MAE (Mean Absolute Error): Mengukur kesalahan prediksi absolut rata-rata pada rating.
 
 ## Hasil pengujian terhadap model adalah sebagai berikut :
 ### Collaborative Filtering
@@ -346,48 +242,14 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
    - Kinerja: Nilai RMSE dan MAE menunjukkan bahwa prediksi model cukup akurat, dengan kesalahan prediksi kecil.
    - Konteks: Hasil ini menunjukkan Collaborative Filtering bekerja dengan baik dalam memprediksi preferensi terhadap jurusan berbasis pola data pengguna lain.
 
-### Content-based Filtering
-1. Hasil Evaluasi:
-   - Precision: 0.502 (50.2%)
-      - Proporsi rekomendasi yang benar (relevan) dari semua rekomendasi yang dihasilkan.
-      - Semakin tinggi precision, semakin baik model memberikan rekomendasi yang tepat.
-   - Recall: 0.251 (25.1%)
-      - Proporsi rekomendasi yang benar (relevan) dari semua opsi yang seharusnya direkomendasikan.
-      - Semakin tinggi recall, semakin baik cakupan model.
-2. Analisis:
-   - Precision Tinggi, Recall Rendah:
-      - Model dapat memberikan rekomendasi yang relevan, tetapi cakupan rekomendasi (jumlah opsi relevan yang terjaring) masih rendah.
-   - Konteks:
-      - Content-based Filtering bergantung pada atribut pengguna (nilai akademik, hobi) sehingga cakupan rekomendasi terbatas pada data yang serupa.
-
-### Hybrid Model
-1. Hasil Evaluasi:
-   - Precision: 0.285 (28.5%)
-   - Recall: 0.143 (14.3%)
-2. Analisis:
-   - Precision dan Recall Lebih Rendah Dibanding Content-based Filtering:
-   - Kombinasi Content-based dan Collaborative Filtering menghasilkan rekomendasi yang kurang spesifik, sehingga precision dan recall menurun.
-3. Konteks:
-   - Hybrid Filtering memperluas cakupan rekomendasi (memasukkan pola pengguna lain), tetapi menurunkan spesifisitas rekomendasi untuk profil tertentu.
-
 ## Kesimpulan
-1. Collaborative Filtering:
+### Collaborative Filtering:
    - Model ini menunjukkan hasil terbaik dalam hal kesalahan prediksi (RMSE dan MAE rendah).
    - Cocok untuk memprediksi relevansi jurusan berbasis pola data pengguna lain.
-2. Content-based Filtering:
-   - Precision tinggi menunjukkan model memberikan rekomendasi yang relevan.
-   - Namun, cakupan rendah (Recall rendah) menunjukkan keterbatasan model pada data yang serupa.
-3. Hybrid Model:
-   - Kombinasi ini menunjukkan kinerja yang lebih rendah dibanding model lain, mungkin karena konflik antara pola Content-based dan Collaborative Filtering.
-   - Namun, Hybrid masih relevan untuk mengatasi masalah cold start dan diversifikasi rekomendasi.
 
 ## Saran
-1. Collaborative Filtering:
+### Collaborative Filtering:
    - Mencoba menggunakan algoritma yang lebih kompleks (misalnya, kNN atau Matrix Factorization lebih lanjut).
-2. Content-based Filtering:
-   - Lakukan penambahan fitur (misalnya, preferensi mahasiswa terhadap profesi) untuk meningkatkan cakupan (Recall).
-3. Hybrid Model:
-   - Lakukan perbaikan keseimbangan antara Content-based dan Collaborative Filtering, misalnya dengan memberikan bobot berbeda pada kedua pendekatan.
 
 ### Referensi
 
