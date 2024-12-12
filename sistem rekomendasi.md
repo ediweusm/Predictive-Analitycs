@@ -121,107 +121,113 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
 
 ## Data Preparation
 ### Teknik Data Preparation
-1. Cleaning: mereplace data kosong, mengubah nilai % menjadi angka, mengubah nama departemen.
-   ```ruby
-    # Mengatasi nilai kosong
-    data.fillna('', inplace=True)
-
-    # Normalize willingness column and handle empty strings
-    data['willingness'] = (
-        data['willingness to pursue a career based on their degree  ']
-        .str.rstrip('%')
-        .fillna('0')
-        .astype(float)
-        / 100
-    )    
-
-    # Dalam dataset tidak menyediakan nama departemen sesuai Indonesia
-    # disini dilakukan penyesuaian nama agar lebih familier dengan user.
-    data['Department'] = data['Department'].replace({
-        'BCA': 'Teknologi Informasi',
-        'Commerce': 'Manajemen Bisnis',
-        'B.com Accounting and Finance ': 'Akuntansi dan Keuangan',
-        'B.com ISM': 'Sistem Informasi Manajemen'
-    })
-   ```
-3. Encoding: Menggunakan Label Encoding untuk mengubah fitur kategorikal menjadi numerik.
-   ```ruby
-   # Encode Gender and Hobbies
+1. Handling Missing Value.
+   - Mengisi atau menghapus data yang hilang agar tidak menyebabkan error atau bias.
+     ```ruby
+     data.fillna('', inplace=True)
+     ```
+2. Handling Duplicate
+   - Menghapus data duplikat untuk menghindari bias
+     ```ruby
+     duplicates = data.duplicated()
+     if duplicates.sum() > 0:
+         print(f"Jumlah baris duplikat: {duplicates.sum()}")
+         data = data.drop_duplicates()
+         print("Duplikasi telah dihapus.")
+     ```
+3. Normalization
+   - Normalisasi nilai numerik menggunakan Min-Max Scaling.
+     ```ruby
+     scaler = MinMaxScaler()
+     data[['10th Mark', '12th Mark', 'college mark','willingness']] = scaler.fit_transform(
+          data[['10th Mark', '12th Mark', 'college mark','willingness']]
+     )
+     ```
+4. Encoding Categorical Data
+   - Menyelaraskan skala data numerik agar algoritma dapat bekerja dengan optimal.
+    ```ruby
     label_encoder = LabelEncoder()
     data['Gender'] = label_encoder.fit_transform(data['Gender'])
-    data['Hobbies'] = label_encoder.fit_transform(data['hobbies'])
     data['selected_department'] = label_encoder.fit_transform(data['Department'])
-   ```
-4. Scaling: Normalisasi nilai akademik menggunakan Min-Max Scaling.
-   ```ruby
-    # Normalize numerical columns
-    scaler = MinMaxScaler()
-    data[['10th Mark', '12th Mark', 'college mark', 'Height(CM)', 'Weight(KG)']] = scaler.fit_transform(
-        data[['10th Mark', '12th Mark', 'college mark', 'Height(CM)', 'Weight(KG)']]
-    )
-    
-    # Penambahan profesi ini bisa variatif, karena di dataset tidak tersedia, maka ditambahkan manual disini
+    data['Hobbies'] = label_encoder.fit_transform(data['hobbies'])
+    ```     
+## Feature Selection
+  - Dalam Collaborative Filtering, biasanya hanya fitur user_id, item_id, dan rating yang digunakan.
+  - Seleksi fitur dapat digunakan untuk menentukan apakah atribut tambahan (Gender, Hobbies, Nilai) relevan untuk dimasukkan.
+  - Mencari korelasi antar fitur untuk menetukan fitur terpiliha
+  ```ruby
+  # Memilih Fitur
+  selected_features = ['10th Mark', '12th Mark', 'college mark', 'Gender', 'hobbies', 'Department','willingness']
+  # Correlate additional features with willingness
+  correlation_matrix = data[['willingness', 'Gender', 'Hobbies', '10th Mark', '12th Mark', 'college mark']].corr()
+  # Display correlation matrix
+  plt.figure(figsize=(10, 6))
+  sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", linewidths=0.5)
+  plt.title("Correlation Matrix of Features")
+  plt.show()
+  ```
 
-    department_professions = {
-        "Teknologi Informasi": [
-            "Analis Data", "Pengembang Aplikasi", "Manajer Proyek IT",
-            "Administrator Basis Data", "Konsultan IT", "Insinyur Jaringan",
-            "Pengembang Web", "Spesialis Keamanan Siber", "Arsitek Sistem",
-            "Ilmuwan Data"
-        ],
-        "Manajemen Bisnis": [
-            "Manajer Pemasaran", "Analis Bisnis", "Manajer Operasi",
-            "Manajer Keuangan", "Konsultan Bisnis", "Pengusaha",
-            "Manajer Sumber Daya Manusia", "Spesialis Riset Pasar",
-            "Manajer Logistik", "Manajer Proyek"
-        ],
-        "Akuntansi dan Keuangan": [
-            "Akuntan Publik", "Auditor Internal", "Analis Keuangan",
-            "Manajer Keuangan", "Akuntan Perpajakan", "Konsultan Keuangan",
-            "Manajer Investasi", "Analis Risiko", "Akuntan Biaya",
-            "Manajer Kredit"
-        ],
-        "Sistem Informasi Manajemen": [
-            "Analis Sistem", "Manajer Proyek IT", "Administrator Sistem",
-            "Pengembang ERP", "Spesialis Data Warehouse", "Analis Bisnis IT",
-            "Manajer Layanan TI", "Konsultan IT", "Manajer Keamanan IT",
-            "Manajer Jaringan"
-        ]
-   ```
-6. Feature Selection: Memilih fitur penting seperti nilai akademik, hobi, dan jenis kelamin untuk digunakan dalam model.
-   ```ruby
-      # Feature Selection   
-      selected_features = ['10th Mark', '12th Mark', 'college mark', 'Gender', 'hobbies', 'Department','willingness']
-      print(f"Fitur yang dipilih untuk model: {selected_features}") 
-   ```
+## Collaborative Filtering Preparation
+   - Mempersiapkan dataset agar kompatibel dengan pustaka Surprise, yang digunakan untuk membangun model Collaborative Filtering.
+     ```ruby
+     data_surprise = Dataset.load_from_df(data[['user_id', 'item_id', 'willingness']], Reader(rating_scale=(0, 1)))
+     ```
+   - Split Data: Membagi data untuk pelatihan dan pengujian model.
+     ```ruby
+     trainset, testset = train_test_split(data_surprise, test_size=0.2, random_state=42)
+     ```
+   - Train Model: Melatih model Collaborative Filtering dengan algoritma SVD. Singular Value Decomposition (SVD) adalah algoritma yang digunakan untuk Collaborative Filtering berbasis matriks dekomposisi.
+     ```ruby
+     model = SVD()
+     model.fit(trainset)
+     ```
+   - Predict and Recommend: Menghasilkan prediksi dan memberikan rekomendasi berdasarkan skor relevansi.
+     ```ruby
+     predictions = model.test(testset)
+     ```
+     
 ## Modelling and Result
 ### Uji Coba Data
     
     Masukkan informasi berikut untuk merekomendasikan karier yang sesuai:
-    Nilai Akhir Kelas 10 (dalam skala 0-100): 98
+    Nilai Akhir Kelas 10 (dalam skala 0-100): 90
     Nilai Akhir Kelas 12 (dalam skala 0-100): 89
     Masukkan nilai GPA kuliah Anda (dalam skala 1-4): 4
     Jenis Kelamin Anda (Laki-laki[1]/Perempuan[0]): 1
+    
     Daftar Hobi:
     1. Video Games
     2. Cinema
     3. Reading books
     4. Sports
-    Masukkan nomor hobi yang ingin Anda pilih: 2
-    Anda memilih hobi: Cinema
     
-### Sistem Rekomendasi
-## Collaborative Filtering:
+    Masukkan nomor hobi yang ingin Anda pilih: 1
+    
+    Anda memilih hobi: Video Games
+    Seberapa besar minat Anda terhadap pekerjaan berbasis hobi ini? (0-1): 1
+    
+    Collaborative Filtering Recommendations (Professions):
+    1. Analis Sistem
+    2. Manajer Proyek IT
+    3. Administrator Sistem
+    4. Pengembang ERP
+    5. Spesialis Data Warehouse
+    
+## Sistem Rekomendasi
+### Collaborative Filtering:
    - Menggunakan algoritma Singular Value Decomposition (SVD) untuk menemukan pola preferensi berbasis data mahasiswa lain, dari pustaka surprise.
    - Model dilatih dengan data preferensi mahasiswa terhadap jurusan.
    - Collaborative Filtering memberikan rekomendasi berbasis pola mahasiswa lain.
-   - Karena dataset tidak terdapat item_id, maka item_id dibuat auto berdasarkan jumlah data unik.
+   - Karena dataset tidak terdapat item_id, maka item_id berasal dari kolom Department dalam dataset, yang mewakili item unik (departemen atau posisi pekerjaan). Kolom ini telah diolah menggunakan metode factorize() untuk menghasilkan representasi numerik.
+     ```ruby
+     data['item_id'] = data['Department'].factorize()[0]
+     ```
    - 5 Profesi Teratas
-       1. Manajer Pemasaran
-       2. Analis Bisnis
-       3. Manajer Operasi
-       4. Manajer Keuangan
-       5. Konsultan Bisnis
+       1. Analis Sistem
+       2. Manajer Proyek IT
+       3. Administrator Sistem
+       4. Pengembang ERP
+       5. Spesialis Data Warehouse
 
 # Evaluation
 ## Metrik Evaluasi yang Digunakan
