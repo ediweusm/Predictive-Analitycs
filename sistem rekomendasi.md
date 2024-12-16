@@ -7,8 +7,19 @@ Berbagai penelitian telah menunjukkan manfaat sistem rekomendasi dalam domain pe
 Melalui penerapan sistem rekomendasi karir, mahasiswa dapat mengakses daftar profesi yang sesuai dengan jurusan, nilai, dan preferensi mereka. Hal ini tidak hanya meningkatkan akurasi dalam pengambilan keputusan, tetapi juga memberikan panduan praktis yang membantu mereka menavigasi dunia kerja yang dinamis dan kompetitif.
 
 ## Business Understanding
-<p align="justify"> Mahasiswa sering menghadapi tantangan dalam menentukan jalur karir yang sesuai dengan kemampuan, minat, dan latar belakang pendidikan mereka. Ketidaktahuan terhadap pilihan yang tersedia serta ketidakcocokan antara jurusan dan preferensi karir dapat menyebabkan pengambilan keputusan yang tidak optimal. Masalah ini diperparah dengan kurangnya panduan berbasis data yang dapat membantu mahasiswa memahami potensi karir berdasarkan profil mereka. Oleh karena itu, diperlukan sistem yang mampu memberikan rekomendasi personal dan relevan untuk membantu mahasiswa memilih jalur karir yang sesuai.
-Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-based Filtering dan Collaborative Filtering. Sistem ini menganalisis atribut seperti nilai akademik, jenis kelamin, dan hobi mahasiswa untuk memberikan daftar profesi yang sesuai. Pendekatan ini tidak hanya memudahkan mahasiswa dalam menentukan pilihan karir, tetapi juga membantu institusi pendidikan dalam mendukung pengembangan kompetensi mahasiswa sesuai kebutuhan pasar kerja.</p> 
+<p align="justify">Mahasiswa sering menghadapi tantangan dalam menentukan jalur karir yang sesuai dengan kemampuan, minat, dan latar belakang pendidikan mereka. Ketidaktahuan terhadap pilihan karir yang tersedia serta ketidakcocokan antara jurusan yang dipilih dan preferensi karir dapat mengakibatkan pengambilan keputusan yang tidak optimal. Hal ini berdampak pada kesenjangan antara kompetensi mahasiswa dan kebutuhan pasar kerja, sehingga mengurangi peluang kesuksesan mereka di dunia profesional. Untuk mengatasi masalah ini, diperlukan sistem rekomendasi berbasis data yang dapat membantu mahasiswa memahami potensi karir berdasarkan interaksi historis dan preferensi serupa dari mahasiswa lainnya. Pendekatan Collaborative Filtering digunakan untuk memberikan rekomendasi personal dengan menganalisis pola interaksi antara mahasiswa (user) dan departemen pendidikan (item). Sistem ini memanfaatkan data seperti preferensi karir, jurusan yang diambil, dan minat individu (hobi) untuk memprediksi profesi yang relevan.</p>
+
+Dengan memanfaatkan Collaborative Filtering, sistem ini dapat:
+1. Memberikan Rekomendasi Personal:
+   - Berdasarkan pola interaksi mahasiswa dengan departemen tertentu dan profesi terkait.
+2. Mengatasi Masalah Cold Start:
+   - Sistem dapat memberikan rekomendasi meskipun data historis interaksi pengguna terbatas, dengan mempertimbangkan profil dasar seperti gender dan hobi.
+3. Mendukung Pengambilan Keputusan yang Tepat:
+   - Mahasiswa dapat memahami pilihan karir yang sesuai dengan latar belakang pendidikan dan preferensi mereka.
+4. Meningkatkan Keterhubungan dengan Kebutuhan Pasar Kerja:
+   - Membantu institusi pendidikan menyelaraskan program pendidikan dengan kebutuhan dunia profesional.
+<p align="justify"> 
+Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data yang tidak hanya memudahkan mahasiswa dalam menentukan jalur karir, tetapi juga mendukung institusi pendidikan untuk meningkatkan relevansi program akademik mereka di era pasar kerja yang dinamis.</p>
 
 ## Problem Statements
 - Bagaimana sistem rekomendasi dapat membantu mencocokkan mahasiswa dengan profesi yang sesuai dengan jurusan dan preferensi mereka.
@@ -191,7 +202,7 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
     
     Masukkan informasi berikut untuk merekomendasikan karier yang sesuai:
     Nilai Akhir Kelas 10 (dalam skala 0-100): 90
-    Nilai Akhir Kelas 12 (dalam skala 0-100): 89
+    Nilai Akhir Kelas 12 (dalam skala 0-100): 98
     Masukkan nilai GPA kuliah Anda (dalam skala 1-4): 4
     Jenis Kelamin Anda (Laki-laki[1]/Perempuan[0]): 1
     
@@ -237,11 +248,34 @@ Sistem rekomendasi karir menawarkan solusi dengan memanfaatkan teknik Content-ba
 
 ## Hasil pengujian terhadap model adalah sebagai berikut :
 ### Collaborative Filtering
+Di kode, metrik RMSE dan MAE diimplementasikan menggunakan pustaka Surprise:
+1. Melatih Model:
+   - Model SVD yang telah dilatih menggunakan trainset diuji pada testset.
+   - Menghasilkan daftar prediksi yang mencakup nilai aktual dan prediksi.
+   ```ruby
+   data['user_id'] = range(len(data))
+   data['item_id'] = data['Department'].factorize()[0]
+   data_surprise = Dataset.load_from_df(data[['user_id', 'item_id', 'willingness']], Reader(rating_scale=(0, 1)))
+   trainset, testset = train_test_split(data_surprise, test_size=0.2, random_state=42)
+   model = SVD()
+   model.test(testset)
+   accuracy.rmse(predictions, verbose=True):
+   ```
+2. Menghitung Root Mean Squared Error (RMSE).
+   - verbose=True menampilkan hasil RMSE di konsol secara langsung.
+   ```ruby
+   accuracy.mae(predictions, verbose=True):
+   ```
+3. Menghitung Mean Absolute Error (MAE).
+   ```ruby
+   mae = accuracy.mae(predictions, verbose=True)
+   ```
+### Keterangan Hasil uji Collaborative Filtering
 1. Hasil Evaluasi:
-   - RMSE (Root Mean Squared Error): 0.226
+   - RMSE (Root Mean Squared Error): 0.2705
       - Mengukur rata-rata perbedaan kuadrat antara nilai prediksi dan nilai aktual.
       - Semakin kecil RMSE, semakin baik model.
-   - MAE (Mean Absolute Error): 0.172
+   - MAE (Mean Absolute Error): 0.2030
       - Mengukur rata-rata perbedaan absolut antara nilai prediksi dan nilai aktual.
       - Semakin kecil MAE, semakin baik model.
 2. Analisis:
