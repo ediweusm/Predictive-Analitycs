@@ -1,12 +1,12 @@
 # Laporan Proyek Machine Learning - Edi Widodo
 
-## 1. Domain Proyek
+# 1. Domain Proyek
 <p align="justify"> 
 Pemilihan jalur karir merupakan salah satu keputusan penting yang dihadapi mahasiswa, terutama di era modern di mana persaingan kerja semakin ketat dan kebutuhan pasar terus berkembang. Menentukan karir yang sesuai dengan minat, kemampuan, dan pendidikan dapat menjadi tantangan besar, terutama ketika mahasiswa tidak memiliki panduan yang cukup untuk memahami pilihan yang tersedia [1]. Sistem rekomendasi karir hadir sebagai solusi inovatif untuk membantu mahasiswa dalam pengambilan keputusan ini[2]. Dengan memanfaatkan data seperti nilai akademik, minat, dan atribut personal lainnya, sistem ini dapat memberikan rekomendasi yang personal dan relevan, sehingga membantu mahasiswa memahami potensi karir yang sesuai dengan profil mereka[3].
 Berbagai penelitian telah menunjukkan manfaat sistem rekomendasi dalam domain pendidikan dan karir [4]. Teknik rekomendasi seperti Content-based Filtering dan Collaborative Filtering telah terbukti efektif dalam memberikan rekomendasi yang relevan dan meningkatkan pengalaman pengguna. Dalam konteks pendidikan, sistem rekomendasi dapat mengarahkan mahasiswa ke jalur karir yang sesuai berdasarkan pola preferensi dan atribut individu. Penelitian juga menunjukkan bahwa analisis data pendidikan dapat digunakan untuk memprediksi performa dan preferensi mahasiswa, yang kemudian dapat diintegrasikan ke dalam sistem rekomendasi.
 Melalui penerapan sistem rekomendasi karir, mahasiswa dapat mengakses daftar profesi yang sesuai dengan jurusan, nilai, dan preferensi mereka. Hal ini tidak hanya meningkatkan akurasi dalam pengambilan keputusan, tetapi juga memberikan panduan praktis yang membantu mereka menavigasi dunia kerja yang dinamis dan kompetitif.
 
-## 2. Business Understanding
+# 2. Business Understanding
 <p align="justify">Mahasiswa sering menghadapi tantangan dalam menentukan jalur karir yang sesuai dengan kemampuan, minat, dan latar belakang pendidikan mereka. Ketidaktahuan terhadap pilihan karir yang tersedia serta ketidakcocokan antara jurusan yang dipilih dan preferensi karir dapat mengakibatkan pengambilan keputusan yang tidak optimal. Hal ini berdampak pada kesenjangan antara kompetensi mahasiswa dan kebutuhan pasar kerja, sehingga mengurangi peluang kesuksesan mereka di dunia profesional. Untuk mengatasi masalah ini, diperlukan sistem rekomendasi berbasis data yang dapat membantu mahasiswa memahami potensi karir berdasarkan interaksi historis dan preferensi serupa dari mahasiswa lainnya. Pendekatan Collaborative Filtering digunakan untuk memberikan rekomendasi personal dengan menganalisis pola interaksi antara mahasiswa (user) dan departemen pendidikan (item). Sistem ini memanfaatkan data seperti preferensi karir, jurusan yang diambil, dan minat individu (hobi) untuk memprediksi profesi yang relevan.</p>
 
 Dengan memanfaatkan Collaborative Filtering, sistem ini dapat:
@@ -21,13 +21,13 @@ Dengan memanfaatkan Collaborative Filtering, sistem ini dapat:
 <p align="justify"> 
 Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data yang tidak hanya memudahkan mahasiswa dalam menentukan jalur karir, tetapi juga mendukung institusi pendidikan untuk meningkatkan relevansi program akademik mereka di era pasar kerja yang dinamis.</p>
 
-### 2.1 Problem Statements
+## 2.1 Problem Statements
 - Mahasiswa seringkali menghadapi kesulitan dalam menentukan profesi yang sesuai dengan jurusan dan preferensi mereka. Salah satu tantangan utama adalah bagaimana membuat sistem rekomendasi yang dapat mencocokkan mahasiswa dengan profesi yang tepat, mengingat berbagai faktor seperti minat pribadi dan tren pasar kerja.
 
-### 2.2 Goals
+## 2.2 Goals
 - Untuk mengatasi permasalahan tersebut, perlu dikembangkan sistem rekomendasi karir berbasis data yang dapat memberikan rekomendasi yang relevan dan terpersonalisasi bagi mahasiswa. Sistem ini akan menggunakan teknik Collaborative Filtering untuk menganalisis pola preferensi mahasiswa lainnya, sehingga dapat menghasilkan daftar profesi yang lebih akurat. Output dari sistem ini adalah daftar top-N profesi yang dapat membantu mahasiswa dalam memilih jalur karir yang sesuai dengan jurusan dan minat mereka.
   
-## 3. Data Understanding
+# 3. Data Understanding
 - Mengambil dataset dari kaggle, di lokasi [Student Attitude and Behavior](https://www.kaggle.com/datasets/susanta21/student-attitude-and-behavior) https://www.kaggle.com/datasets/susanta21/student-attitude-and-behavior
 - Jumlah Data: 235 entri.
 - Jumlah Kolom : 19 kolom.
@@ -37,7 +37,7 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
 - Untuk variabel nilai, dataset ini menggunakan nilai kelas 10, dianggap disesuaikan dengan Indonesia adalah nilai kelas 9.
 - Nilai pada jenjang perkuliahan, menggunakan skala 1-100. Artinya, input IPK yang diakui di Indonesia dengan skala 1-4, harus disesuaikan secara manual
 
-### 3.1 Fitur atau Variable pada dataset 
+## 3.1 Fitur atau Variable pada dataset 
   1. Certification Course
      - Tipe Data: Kategorikal (Ya/No)
      - Deskripsi: Menunjukkan apakah individu mengikuti kursus sertifikasi tambahan selain kuliah.
@@ -96,7 +96,7 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
       - Tipe Data: Kategorikal (Ya/No)
       - Deskripsi: Menunjukkan apakah individu memiliki pekerjaan paruh waktu.
      
-### 3.2 Outlier Data
+## 3.2 Outlier Data
 - Fitur yang diseleksi dan potensi outlier :
   -  10th Mark, Numerik, Potensi memiliki outlier.
   -  12th Mark, Numerik, Potensi memiliki outlier.
@@ -123,17 +123,16 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
     - Batas bawah : 0.7
     - Batas atas : 1.0
     - Outliers: Tidak ada.
-- Penanganan Outlier :
-  -  Mendeteksi outlier dari numerikal selected feature, dan jika ada outlier akan direplace dengan nilai Median
 
-## 4. Data Preparation
-### 4.1 Teknik Data Preparation
-1. Handling Missing Value.
-   - Mengisi atau menghapus data yang hilang agar tidak menyebabkan error atau bias.
-     ```ruby
-     data.fillna('', inplace=True)
-     ```
-2. Handling Duplicate
+
+# 4. Data Preparation
+## 4.1 Data Cleansing
+   a. Handling Missing Value.
+   -  Mengisi atau menghapus data yang hilang agar tidak menyebabkan error atau bias.
+      ```ruby
+      data.fillna('', inplace=True)
+      ```
+   b. Handling Duplicate
    - Menghapus data duplikat untuk menghindari bias
      ```ruby
      duplicates = data.duplicated()
@@ -142,26 +141,55 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
          data = data.drop_duplicates()
          print("Duplikasi telah dihapus.")
      ```
-3. Normalization
-   - Normalisasi nilai numerik menggunakan Min-Max Scaling.
-     ```ruby
-     scaler = MinMaxScaler()
-     data[['10th Mark', '12th Mark', 'college mark','willingness']] = scaler.fit_transform(
-          data[['10th Mark', '12th Mark', 'college mark','willingness']]
-     )
+   c. Handling Outlier
+   - Mendeteksi outlier dari numerikal selected feature, dan jika ada outlier akan direplace dengan nilai Median
+     ```ruby        
+     numeric_features = [feature for feature in selected_features if data[feature].dtype in ['int64', 'float64']]
+     # Handling outliers by replacing them with the median using IQR         
+     for column in numeric_features:
+         Q1 = data[column].quantile(0.25)
+         Q3 = data[column].quantile(0.75)
+         IQR = Q3 - Q1
+         lower_bound = Q1 - 1.5 * IQR
+         upper_bound = Q3 + 1.5 * IQR
+     # Calculate median
+     median = data[column].median()
+     # Replace outliers with the median
+     data[column] = data[column].apply(lambda x: median if x < lower_bound or x > upper_bound else x)
+     # Display the processed numeric features after outlier handling
+     data[numeric_features].describe()
      ```
-4. Encoding Categorical Data
+## 4.2 Data Transformation
+1. Mengubah data bernilai % (persen) menjadi angka
+   ```ruby
+   data['willingness'] = (
+       data['willingness to pursue a career based on their degree  ']
+       .str.rstrip('%')
+       .fillna('0')
+       .astype(float)
+       / 100
+   )
+   ```
+2. Encoding Categorical Data
    - Menyelaraskan skala data numerik agar algoritma dapat bekerja dengan optimal.
     ```ruby
     label_encoder = LabelEncoder()
     data['Gender'] = label_encoder.fit_transform(data['Gender'])
     data['selected_department'] = label_encoder.fit_transform(data['Department'])
     data['Hobbies'] = label_encoder.fit_transform(data['hobbies'])
-    ```     
-## 4.2 Feature Selection
+    ```
+3. Normalisasi
+   - Normalisasi nilai numerik menggunakan Min-Max Scaling.
+   ```ruby
+   scaler = MinMaxScaler()
+   data[['10th Mark', '12th Mark', 'college mark','willingness']] = scaler.fit_transform(
+        data[['10th Mark', '12th Mark', 'college mark','willingness']]
+   )
+   ```
+## 4.3 Feature Selection
   - Dalam Collaborative Filtering, biasanya hanya fitur user_id, item_id, dan rating yang digunakan.
   - Seleksi fitur dapat digunakan untuk menentukan apakah atribut tambahan (Gender, Hobbies, Nilai) relevan untuk dimasukkan.
-  - Mencari korelasi antar fitur untuk menetukan fitur terpiliha
+  - Mencari korelasi antar fitur untuk menetukan fitur terpilih
   ```ruby
   # Memilih Fitur
   selected_features = ['10th Mark', '12th Mark', 'college mark', 'Gender', 'hobbies', 'Department','willingness']
@@ -174,8 +202,14 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
   plt.show()
   ```
 
-## 5. Modelling and Result
-### 5.1 Collaborative Filtering Preparation
+# 5. Modelling and Result
+## 5.1 Collaborative Filtering:
+   - Menggunakan algoritma Singular Value Decomposition (SVD) untuk menemukan pola preferensi berbasis data mahasiswa lain, dari pustaka surprise.
+   - Model dilatih dengan data preferensi mahasiswa terhadap jurusan.
+   - Collaborative Filtering memberikan rekomendasi berbasis pola mahasiswa lain.
+   - Karena dataset tidak terdapat item_id, maka item_id berasal dari kolom Department dalam dataset, yang mewakili item unik (departemen atau posisi pekerjaan). Kolom ini telah diolah menggunakan metode factorize() untuk menghasilkan representasi numerik.
+
+## 5.2 Collaborative Filtering Preparation
    - Mempersiapkan dataset agar kompatibel dengan pustaka Surprise, yang digunakan untuk membangun model Collaborative Filtering.
      ```ruby
      data_surprise = Dataset.load_from_df(data[['user_id', 'item_id', 'willingness']], Reader(rating_scale=(0, 1)))
@@ -193,8 +227,43 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
      ```ruby
      predictions = model.test(testset)
      ```
+   - Tampilkan Top N
+     ```ruby
+     recommended_professions[:top_n]
+     ```
      
-### 5.3 Uji Coba Data
+
+## 5.3 Evaluation
+### Evaluasi Collaborative Filtering:
+  - RMSE (Root Mean Squared Error): Mengukur kesalahan prediksi rata-rata pada rating.
+  - MAE (Mean Absolute Error): Mengukur kesalahan prediksi absolut rata-rata pada rating.
+
+### Hasil pengujian terhadap model Collaborative Filtering adalah sebagai berikut :
+Di kode, metrik RMSE dan MAE diimplementasikan menggunakan pustaka Surprise:
+1. Melatih Model:
+   - Model SVD yang telah dilatih menggunakan trainset diuji pada testset.
+   - Menghasilkan daftar prediksi yang mencakup nilai aktual dan prediksi.
+   ```ruby
+   data['user_id'] = range(len(data))
+   data['item_id'] = data['Department'].factorize()[0]
+   data_surprise = Dataset.load_from_df(data[['user_id', 'item_id', 'willingness']], Reader(rating_scale=(0, 1)))
+   trainset, testset = train_test_split(data_surprise, test_size=0.2, random_state=42)
+   model = SVD()
+   model.test(testset)
+   accuracy.rmse(predictions, verbose=True):
+   ```
+2. Menghitung Root Mean Squared Error (RMSE).
+   - verbose=True menampilkan hasil RMSE di konsol secara langsung.
+   ```ruby
+   accuracy.mae(predictions, verbose=True):
+   ```
+3. Menghitung Mean Absolute Error (MAE).
+   ```ruby
+   mae = accuracy.mae(predictions, verbose=True)
+   ```
+
+# 6. Pengujian
+## Uji Coba Data
     
     Masukkan informasi berikut untuk merekomendasikan karier yang sesuai:
     Nilai Akhir Kelas 10 (dalam skala 0-100): 90
@@ -219,53 +288,7 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
     3. Administrator Sistem
     4. Pengembang ERP
     5. Spesialis Data Warehouse
-    
-## Sistem Rekomendasi
-### Collaborative Filtering:
-   - Menggunakan algoritma Singular Value Decomposition (SVD) untuk menemukan pola preferensi berbasis data mahasiswa lain, dari pustaka surprise.
-   - Model dilatih dengan data preferensi mahasiswa terhadap jurusan.
-   - Collaborative Filtering memberikan rekomendasi berbasis pola mahasiswa lain.
-   - Karena dataset tidak terdapat item_id, maka item_id berasal dari kolom Department dalam dataset, yang mewakili item unik (departemen atau posisi pekerjaan). Kolom ini telah diolah menggunakan metode factorize() untuk menghasilkan representasi numerik.
-     ```ruby
-     data['item_id'] = data['Department'].factorize()[0]
-     ```
-   - 5 Profesi Teratas
-       1. Analis Sistem
-       2. Manajer Proyek IT
-       3. Administrator Sistem
-       4. Pengembang ERP
-       5. Spesialis Data Warehouse
 
-# Evaluation
-## Metrik Evaluasi yang Digunakan
-### Evaluasi Collaborative Filtering:
-  - RMSE (Root Mean Squared Error): Mengukur kesalahan prediksi rata-rata pada rating.
-  - MAE (Mean Absolute Error): Mengukur kesalahan prediksi absolut rata-rata pada rating.
-
-## Hasil pengujian terhadap model adalah sebagai berikut :
-### Collaborative Filtering
-Di kode, metrik RMSE dan MAE diimplementasikan menggunakan pustaka Surprise:
-1. Melatih Model:
-   - Model SVD yang telah dilatih menggunakan trainset diuji pada testset.
-   - Menghasilkan daftar prediksi yang mencakup nilai aktual dan prediksi.
-   ```ruby
-   data['user_id'] = range(len(data))
-   data['item_id'] = data['Department'].factorize()[0]
-   data_surprise = Dataset.load_from_df(data[['user_id', 'item_id', 'willingness']], Reader(rating_scale=(0, 1)))
-   trainset, testset = train_test_split(data_surprise, test_size=0.2, random_state=42)
-   model = SVD()
-   model.test(testset)
-   accuracy.rmse(predictions, verbose=True):
-   ```
-2. Menghitung Root Mean Squared Error (RMSE).
-   - verbose=True menampilkan hasil RMSE di konsol secara langsung.
-   ```ruby
-   accuracy.mae(predictions, verbose=True):
-   ```
-3. Menghitung Mean Absolute Error (MAE).
-   ```ruby
-   mae = accuracy.mae(predictions, verbose=True)
-   ```
 ### Keterangan Hasil uji Collaborative Filtering
 1. Hasil Evaluasi:
    - RMSE (Root Mean Squared Error): 0.2705
@@ -278,12 +301,12 @@ Di kode, metrik RMSE dan MAE diimplementasikan menggunakan pustaka Surprise:
    - Kinerja: Nilai RMSE dan MAE menunjukkan bahwa prediksi model cukup akurat, dengan kesalahan prediksi kecil.
    - Konteks: Hasil ini menunjukkan Collaborative Filtering bekerja dengan baik dalam memprediksi preferensi terhadap jurusan berbasis pola data pengguna lain.
 
-## Kesimpulan
+# 7. Kesimpulan
 ### Collaborative Filtering:
    - Model ini menunjukkan hasil terbaik dalam hal kesalahan prediksi (RMSE dan MAE rendah).
    - Cocok untuk memprediksi relevansi jurusan berbasis pola data pengguna lain.
 
-## Saran
+# 8. Saran
 ### Collaborative Filtering:
    - Mencoba menggunakan algoritma yang lebih kompleks (misalnya, kNN atau Matrix Factorization lebih lanjut).
 
