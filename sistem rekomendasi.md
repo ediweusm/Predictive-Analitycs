@@ -1,12 +1,12 @@
 # Laporan Proyek Machine Learning - Edi Widodo
 
-## Domain Proyek
+## 1. Domain Proyek
 <p align="justify"> 
 Pemilihan jalur karir merupakan salah satu keputusan penting yang dihadapi mahasiswa, terutama di era modern di mana persaingan kerja semakin ketat dan kebutuhan pasar terus berkembang. Menentukan karir yang sesuai dengan minat, kemampuan, dan pendidikan dapat menjadi tantangan besar, terutama ketika mahasiswa tidak memiliki panduan yang cukup untuk memahami pilihan yang tersedia [1]. Sistem rekomendasi karir hadir sebagai solusi inovatif untuk membantu mahasiswa dalam pengambilan keputusan ini[2]. Dengan memanfaatkan data seperti nilai akademik, minat, dan atribut personal lainnya, sistem ini dapat memberikan rekomendasi yang personal dan relevan, sehingga membantu mahasiswa memahami potensi karir yang sesuai dengan profil mereka[3].
 Berbagai penelitian telah menunjukkan manfaat sistem rekomendasi dalam domain pendidikan dan karir [4]. Teknik rekomendasi seperti Content-based Filtering dan Collaborative Filtering telah terbukti efektif dalam memberikan rekomendasi yang relevan dan meningkatkan pengalaman pengguna. Dalam konteks pendidikan, sistem rekomendasi dapat mengarahkan mahasiswa ke jalur karir yang sesuai berdasarkan pola preferensi dan atribut individu. Penelitian juga menunjukkan bahwa analisis data pendidikan dapat digunakan untuk memprediksi performa dan preferensi mahasiswa, yang kemudian dapat diintegrasikan ke dalam sistem rekomendasi.
 Melalui penerapan sistem rekomendasi karir, mahasiswa dapat mengakses daftar profesi yang sesuai dengan jurusan, nilai, dan preferensi mereka. Hal ini tidak hanya meningkatkan akurasi dalam pengambilan keputusan, tetapi juga memberikan panduan praktis yang membantu mereka menavigasi dunia kerja yang dinamis dan kompetitif.
 
-## Business Understanding
+## 2. Business Understanding
 <p align="justify">Mahasiswa sering menghadapi tantangan dalam menentukan jalur karir yang sesuai dengan kemampuan, minat, dan latar belakang pendidikan mereka. Ketidaktahuan terhadap pilihan karir yang tersedia serta ketidakcocokan antara jurusan yang dipilih dan preferensi karir dapat mengakibatkan pengambilan keputusan yang tidak optimal. Hal ini berdampak pada kesenjangan antara kompetensi mahasiswa dan kebutuhan pasar kerja, sehingga mengurangi peluang kesuksesan mereka di dunia profesional. Untuk mengatasi masalah ini, diperlukan sistem rekomendasi berbasis data yang dapat membantu mahasiswa memahami potensi karir berdasarkan interaksi historis dan preferensi serupa dari mahasiswa lainnya. Pendekatan Collaborative Filtering digunakan untuk memberikan rekomendasi personal dengan menganalisis pola interaksi antara mahasiswa (user) dan departemen pendidikan (item). Sistem ini memanfaatkan data seperti preferensi karir, jurusan yang diambil, dan minat individu (hobi) untuk memprediksi profesi yang relevan.</p>
 
 Dengan memanfaatkan Collaborative Filtering, sistem ini dapat:
@@ -21,17 +21,13 @@ Dengan memanfaatkan Collaborative Filtering, sistem ini dapat:
 <p align="justify"> 
 Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data yang tidak hanya memudahkan mahasiswa dalam menentukan jalur karir, tetapi juga mendukung institusi pendidikan untuk meningkatkan relevansi program akademik mereka di era pasar kerja yang dinamis.</p>
 
-## Problem Statements
-- Bagaimana sistem rekomendasi dapat membantu mencocokkan mahasiswa dengan profesi yang sesuai dengan jurusan dan preferensi mereka.
-- Bagaimana teknik Content-based Filtering dan Hybrid Collaborative Filtering dapat diintegrasikan untuk menghasilkan rekomendasi karir yang personal dan akurat.
+### 2.1 Problem Statements
+- Mahasiswa seringkali menghadapi kesulitan dalam menentukan profesi yang sesuai dengan jurusan dan preferensi mereka. Salah satu tantangan utama adalah bagaimana membuat sistem rekomendasi yang dapat mencocokkan mahasiswa dengan profesi yang tepat, mengingat berbagai faktor seperti minat pribadi dan tren pasar kerja.
 
-### Goals
-- Mengembangkan sistem rekomendasi karir berbasis data yang mampu memberikan rekomendasi personal dan relevan bagi mahasiswa.
-- Menerapkan teknik Content-based Filtering untuk mencocokkan profil individu dengan profesi yang relevan.
-- Menggunakan Collaborative Filtering untuk meningkatkan akurasi rekomendasi dengan mempertimbangkan pola preferensi dari mahasiswa lainnya.
-- Menyediakan output berupa daftar top-N profesi yang dapat membantu mahasiswa menentukan jalur karir yang sesuai.
+### 2.2 Goals
+- Untuk mengatasi permasalahan tersebut, perlu dikembangkan sistem rekomendasi karir berbasis data yang dapat memberikan rekomendasi yang relevan dan terpersonalisasi bagi mahasiswa. Sistem ini akan menggunakan teknik Collaborative Filtering untuk menganalisis pola preferensi mahasiswa lainnya, sehingga dapat menghasilkan daftar profesi yang lebih akurat. Output dari sistem ini adalah daftar top-N profesi yang dapat membantu mahasiswa dalam memilih jalur karir yang sesuai dengan jurusan dan minat mereka.
   
-## Data Understanding
+## 3. Data Understanding
 - Mengambil dataset dari kaggle, di lokasi [Student Attitude and Behavior](https://www.kaggle.com/datasets/susanta21/student-attitude-and-behavior) https://www.kaggle.com/datasets/susanta21/student-attitude-and-behavior
 - Jumlah Data: 235 entri.
 - Jumlah Kolom : 19 kolom.
@@ -41,7 +37,7 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
 - Untuk variabel nilai, dataset ini menggunakan nilai kelas 10, dianggap disesuaikan dengan Indonesia adalah nilai kelas 9.
 - Nilai pada jenjang perkuliahan, menggunakan skala 1-100. Artinya, input IPK yang diakui di Indonesia dengan skala 1-4, harus disesuaikan secara manual
 
-### Fitur atau Variable pada dataset 
+### 3.1 Fitur atau Variable pada dataset 
   1. Certification Course
      - Tipe Data: Kategorikal (Ya/No)
      - Deskripsi: Menunjukkan apakah individu mengikuti kursus sertifikasi tambahan selain kuliah.
@@ -100,7 +96,7 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
       - Tipe Data: Kategorikal (Ya/No)
       - Deskripsi: Menunjukkan apakah individu memiliki pekerjaan paruh waktu.
      
-### Outlier Data
+### 3.2 Outlier Data
 - Fitur yang diseleksi dan potensi outlier :
   -  10th Mark, Numerik, Potensi memiliki outlier.
   -  12th Mark, Numerik, Potensi memiliki outlier.
@@ -130,8 +126,8 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
 - Penanganan Outlier :
   -  Mendeteksi outlier dari numerikal selected feature, dan jika ada outlier akan direplace dengan nilai Median
 
-## Data Preparation
-### Teknik Data Preparation
+## 4. Data Preparation
+### 4.1 Teknik Data Preparation
 1. Handling Missing Value.
    - Mengisi atau menghapus data yang hilang agar tidak menyebabkan error atau bias.
      ```ruby
@@ -162,7 +158,7 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
     data['selected_department'] = label_encoder.fit_transform(data['Department'])
     data['Hobbies'] = label_encoder.fit_transform(data['hobbies'])
     ```     
-## Feature Selection
+## 4.2 Feature Selection
   - Dalam Collaborative Filtering, biasanya hanya fitur user_id, item_id, dan rating yang digunakan.
   - Seleksi fitur dapat digunakan untuk menentukan apakah atribut tambahan (Gender, Hobbies, Nilai) relevan untuk dimasukkan.
   - Mencari korelasi antar fitur untuk menetukan fitur terpiliha
@@ -178,7 +174,8 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
   plt.show()
   ```
 
-## Collaborative Filtering Preparation
+## 5. Modelling and Result
+### 5.1 Collaborative Filtering Preparation
    - Mempersiapkan dataset agar kompatibel dengan pustaka Surprise, yang digunakan untuk membangun model Collaborative Filtering.
      ```ruby
      data_surprise = Dataset.load_from_df(data[['user_id', 'item_id', 'willingness']], Reader(rating_scale=(0, 1)))
@@ -197,8 +194,7 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
      predictions = model.test(testset)
      ```
      
-## Modelling and Result
-### Uji Coba Data
+### 5.3 Uji Coba Data
     
     Masukkan informasi berikut untuk merekomendasikan karier yang sesuai:
     Nilai Akhir Kelas 10 (dalam skala 0-100): 90
