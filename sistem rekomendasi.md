@@ -203,13 +203,41 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
   ```
 
 # 5. Modelling and Result
-## 5.1 Collaborative Filtering:
+## 5.1 Hybrid Filtering:
+   - Collaborative Filtering (CF) adalah pendekatan yang memanfaatkan pola interaksi pengguna terhadap item (misalnya, rating, preferensi, atau perilaku eksplisit/implisit lainnya).
    - Menggunakan algoritma Singular Value Decomposition (SVD) untuk menemukan pola preferensi berbasis data mahasiswa lain, dari pustaka surprise.
+   - SVD membantu mendekomposisi matriks user-item (yang merepresentasikan interaksi atau preferensi) menjadi beberapa latent factor (faktor tersembunyi)
+   - Melalui proses ini, sistem dapat memprediksi rating atau tingkat kesukaan pengguna terhadap item tertentu.
    - Model dilatih dengan data preferensi mahasiswa terhadap jurusan.
    - Collaborative Filtering memberikan rekomendasi berbasis pola mahasiswa lain.
    - Karena dataset tidak terdapat item_id, maka item_id berasal dari kolom Department dalam dataset, yang mewakili item unik (departemen atau posisi pekerjaan). Kolom ini telah diolah menggunakan metode factorize() untuk menghasilkan representasi numerik.
 
-## 5.2 Collaborative Filtering Preparation
+### Kelemahan dari CF :
+- Masalah cold start muncul ketika ada pengguna baru yang belum memiliki riwayat interaksi apa pun, atau ketika ada item baru yang belum memiliki rating atau ulasan dari pengguna.
+- Tanpa data interaksi, pendekatan CF murni tidak mampu memberikan rekomendasi yang relevan, karena CF sangat bergantung pada data historis (rating, klik, dll.).
+
+### Mengatasi Masalah Cold Start dengan Content Based Filtering :
+- Tanpa data interaksi, pendekatan CF murni tidak mampu memberikan rekomendasi yang relevan, karena CF sangat bergantung pada data historis (rating, klik, dll.).
+- Pada kasus dataset ini, digunakan pendekatan Content Based filtering (CB). dengan cara menganalisis kesamaan antar fitur pengguna, misalnya 10th Mark, 12th Mark, college mark, Gender, Hobbies, dll.
+- Dengan cosine similarity, sistem dapat mencari pengguna lain yang memiliki profil fitur mirip, lalu menggunakan preferensi (riwayat) pengguna yang mirip tersebut untuk memprediksi minat pengguna baru.
+   - Contohnya, jika ada pengguna baru dengan hobbies dan gender tertentu, maka sistem dapat mencari pengguna lama dengan hobi dan gender serupa, melihat jurusan/bidang apa yang pengguna lama sukai, lalu merekomendasikannya kepada pengguna baru.
+
+### Kelemahan CB :
+- CB cenderung hanya melihat sisi kesamaan fitur dan kurang bisa menangkap pola preferensi kolektif dari banyak pengguna.
+- Selain itu, jika fitur konten tidak cukup kaya atau tidak direpresentasikan dengan baik, akurasi prediksi rekomendasi akan menurun.
+
+### Kolaborasi CB dan CF (Hybrid) :
+- Dengan menggabungkan collaborative filtering (untuk memanfaatkan pola kesamaan perilaku antar pengguna) dan content-based filtering (untuk memanfaatkan kesamaan fitur pengguna dalam mengatasi cold start), sistem rekomendasi menjadi lebih tangguh.
+- CF dapat memberikan rekomendasi yang sangat relevan ketika data riwayat cukup (banyak interaksi).
+- CB dapat menolong di awal ketika data riwayat pengguna baru masih minim (cold start), sehingga sistem tetap bisa memberikan rekomendasi walaupun data interaksi sedikit atau bahkan belum ada.
+- Collaborative Filtering SVD akan “belajar” dari preferensi (rating, klik, willingness, dsb.) di antara pengguna yang sudah ada, menghasilkan rekomendasi yang lebih personal dan berbasis pola perilaku.
+- Content-Based Filtering akan mengisi kekosongan ketika data riwayat belum memadai, yaitu dengan membandingkan kesamaan atribut pengguna (misalnya nilai ujian, gender, hobbies) untuk menebak minat jurusan/bidang yang kemungkinan disukai. 
+
+### Solusi yang diusulkan :
+- Saat pengguna sudah memiliki data interaksi yang cukup, sistem CF berbasis SVD akan mendominasi untuk menghasilkan rekomendasi yang lebih akurat.
+- Namun saat pengguna baru masuk atau memiliki sedikit interaksi, sistem CB (melalui cosine similarity berbasis fitur) akan lebih berperan sampai data interaksi pengguna tersebut memadai untuk diolah oleh CF.
+
+## 5.2 Hybrid Filtering Preparation
    - Mempersiapkan dataset agar kompatibel dengan pustaka Surprise, yang digunakan untuk membangun model Collaborative Filtering.
      ```ruby
      data_surprise = Dataset.load_from_df(data[['user_id', 'item_id', 'willingness']], Reader(rating_scale=(0, 1)))
@@ -232,7 +260,6 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
      recommended_professions[:top_n]
      ```
      
-
 ## 5.3 Evaluation
 ### Evaluasi Collaborative Filtering:
   - RMSE (Root Mean Squared Error): Mengukur kesalahan prediksi rata-rata pada rating.
@@ -261,34 +288,32 @@ Di kode, metrik RMSE dan MAE diimplementasikan menggunakan pustaka Surprise:
    ```ruby
    mae = accuracy.mae(predictions, verbose=True)
    ```
-
-# 6. Pengujian
-## Uji Coba Data
+4. Pengujian    
+   ```ruby 
+   Masukkan informasi berikut untuk merekomendasikan karier yang sesuai:
+   Nilai Akhir Kelas 10 (dalam skala 0-100): 90
+   Nilai Akhir Kelas 12 (dalam skala 0-100): 98
+   Masukkan nilai GPA kuliah Anda (dalam skala 1-4): 4
+   Jenis Kelamin Anda (Laki-laki[1]/Perempuan[0]): 1
     
-    Masukkan informasi berikut untuk merekomendasikan karier yang sesuai:
-    Nilai Akhir Kelas 10 (dalam skala 0-100): 90
-    Nilai Akhir Kelas 12 (dalam skala 0-100): 98
-    Masukkan nilai GPA kuliah Anda (dalam skala 1-4): 4
-    Jenis Kelamin Anda (Laki-laki[1]/Perempuan[0]): 1
+   Daftar Hobi:
+   1. Video Games
+   2. Cinema
+   3. Reading books
+   4. Sports
     
-    Daftar Hobi:
-    1. Video Games
-    2. Cinema
-    3. Reading books
-    4. Sports
+   Masukkan nomor hobi yang ingin Anda pilih: 1
     
-    Masukkan nomor hobi yang ingin Anda pilih: 1
+   Anda memilih hobi: Video Games
+   Seberapa besar minat Anda terhadap pekerjaan berbasis hobi ini? (0-1): 1
     
-    Anda memilih hobi: Video Games
-    Seberapa besar minat Anda terhadap pekerjaan berbasis hobi ini? (0-1): 1
-    
-    Collaborative Filtering Recommendations (Professions):
-    1. Analis Sistem
-    2. Manajer Proyek IT
-    3. Administrator Sistem
-    4. Pengembang ERP
-    5. Spesialis Data Warehouse
-
+   Collaborative Filtering Recommendations (Professions):
+   1. Analis Sistem
+   2. Manajer Proyek IT
+   3. Administrator Sistem
+   4. Pengembang ERP
+   5. Spesialis Data Warehouse
+   ```
 ### Keterangan Hasil uji Collaborative Filtering
 1. Hasil Evaluasi:
    - RMSE (Root Mean Squared Error): 0.2705
@@ -301,16 +326,21 @@ Di kode, metrik RMSE dan MAE diimplementasikan menggunakan pustaka Surprise:
    - Kinerja: Nilai RMSE dan MAE menunjukkan bahwa prediksi model cukup akurat, dengan kesalahan prediksi kecil.
    - Konteks: Hasil ini menunjukkan Collaborative Filtering bekerja dengan baik dalam memprediksi preferensi terhadap jurusan berbasis pola data pengguna lain.
 
-# 7. Kesimpulan
-### Collaborative Filtering:
+# 6. Kesimpulan
+## Collaborative Filtering:
    - Model ini menunjukkan hasil terbaik dalam hal kesalahan prediksi (RMSE dan MAE rendah).
    - Cocok untuk memprediksi relevansi jurusan berbasis pola data pengguna lain.
+   - Dataset yang digunakan pada pengujian ini, tidak cocok untuk penerapan CF secara sepenuhnya, dan juga tidak cocok sepenuhnya menggunakan CB filtering.
+   - Solusi dari permasalahan ini digunakan metode Hybrid Filtering.
+     
+## Hybrid Filtering:
+   - untuk mengatasi masalah cold start pada collaborative filtering, dicari kesamaan antar fitur pengguna seperti 10th Mark, 12th Mark, college mark, Gender, dan Hobbies dengan menggunakan cosine similarity untuk mengidentifikasi pengguna yang mirip, sehingga memungkinkan prediksi rekomendasi untuk pengguna baru berdasarkan preferensi pengguna yang serupa. 
 
-# 8. Saran
-### Collaborative Filtering:
+# 7. Saran
+## Collaborative Filtering:
    - Mencoba menggunakan algoritma yang lebih kompleks (misalnya, kNN atau Matrix Factorization lebih lanjut).
 
-### Referensi
+## Referensi
 
 [1] F. Firmahsyah and T. Gantini, “Penerapan Metode Content-Based Filtering Pada Sistem Rekomendasi Kegiatan Ekstrakulikuler (Studi Kasus di Sekolah ABC)”, JuTISI, vol. 2, no. 3, Dec. 2016.
 
