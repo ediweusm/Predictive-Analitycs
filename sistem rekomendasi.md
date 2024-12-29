@@ -21,11 +21,11 @@ Dengan memanfaatkan Collaborative Filtering, sistem ini dapat:
 <p align="justify"> 
 Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data yang tidak hanya memudahkan mahasiswa dalam menentukan jalur karir, tetapi juga mendukung institusi pendidikan untuk meningkatkan relevansi program akademik mereka di era pasar kerja yang dinamis.</p>
 
-## 2.1 Problem Statements
-- Mahasiswa seringkali menghadapi kesulitan dalam menentukan profesi yang sesuai dengan jurusan dan preferensi mereka. Salah satu tantangan utama adalah bagaimana membuat sistem rekomendasi yang dapat mencocokkan mahasiswa dengan profesi yang tepat, mengingat berbagai faktor seperti minat pribadi dan tren pasar kerja.
-
-## 2.2 Goals
-- Untuk mengatasi permasalahan tersebut, perlu dikembangkan sistem rekomendasi karir berbasis data yang dapat memberikan rekomendasi yang relevan dan terpersonalisasi bagi mahasiswa. Sistem ini akan menggunakan teknik Collaborative Filtering untuk menganalisis pola preferensi mahasiswa lainnya, sehingga dapat menghasilkan daftar profesi yang lebih akurat. Output dari sistem ini adalah daftar top-N profesi yang dapat membantu mahasiswa dalam memilih jalur karir yang sesuai dengan jurusan dan minat mereka.
+   ## 2.1 Problem Statements
+   - Mahasiswa seringkali menghadapi kesulitan dalam menentukan profesi yang sesuai dengan jurusan dan preferensi mereka. Salah satu tantangan utama adalah bagaimana membuat sistem rekomendasi yang dapat mencocokkan mahasiswa dengan profesi yang tepat, mengingat berbagai faktor seperti minat pribadi dan tren pasar kerja.
+   
+   ## 2.2 Goals
+   - Untuk mengatasi permasalahan tersebut, perlu dikembangkan sistem rekomendasi karir berbasis data yang dapat memberikan rekomendasi yang relevan dan terpersonalisasi bagi mahasiswa. Sistem ini akan menggunakan teknik Collaborative Filtering untuk menganalisis pola preferensi mahasiswa lainnya, sehingga dapat menghasilkan daftar profesi yang lebih akurat. Output dari sistem ini adalah daftar top-N profesi yang dapat membantu mahasiswa dalam memilih jalur karir yang sesuai dengan jurusan dan minat mereka.
   
 # 3. Data Understanding
 - Mengambil dataset dari kaggle, di lokasi [Student Attitude and Behavior](https://www.kaggle.com/datasets/susanta21/student-attitude-and-behavior) https://www.kaggle.com/datasets/susanta21/student-attitude-and-behavior
@@ -124,7 +124,6 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
     - Batas atas : 1.0
     - Outliers: Tidak ada.
 
-
 # 4. Data Preparation
 ## 4.1 Data Cleansing
    a. Handling Missing Value.
@@ -159,7 +158,14 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
      # Display the processed numeric features after outlier handling
      data[numeric_features].describe()
      ```
-## 4.2 Data Transformation
+## 4.2 Data Splitting
+   - Membagi dataset menjadi train set dan test set dengan rasio tertentu, misalnya 80:20 atau 70:30.
+   - Pembagian data bertujuan untuk memastikan bahwa model dilatih pada sebagian data dan dievaluasi pada data yang tidak pernah dilihat sebelumnya, sehingga menghasilkan model yang lebih general.
+   ```ruby
+     trainset, testset = train_test_split(data_surprise, test_size=0.2, random_state=42)
+   ```
+
+## 4.3 Data Transformation
 1. Mengubah data bernilai % (persen) menjadi angka
    ```ruby
    data['willingness'] = (
@@ -186,7 +192,7 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
         data[['10th Mark', '12th Mark', 'college mark','willingness']]
    )
    ```
-## 4.3 Feature Selection
+## 4.4 Feature Selection
   - Dalam Collaborative Filtering, biasanya hanya fitur user_id, item_id, dan rating yang digunakan.
   - Seleksi fitur dapat digunakan untuk menentukan apakah atribut tambahan (Gender, Hobbies, Nilai) relevan untuk dimasukkan.
   - Mencari korelasi antar fitur untuk menetukan fitur terpilih
@@ -242,10 +248,6 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
      ```ruby
      data_surprise = Dataset.load_from_df(data[['user_id', 'item_id', 'willingness']], Reader(rating_scale=(0, 1)))
      ```
-   - Split Data: Membagi data untuk pelatihan dan pengujian model.
-     ```ruby
-     trainset, testset = train_test_split(data_surprise, test_size=0.2, random_state=42)
-     ```
    - Train Model: Melatih model Collaborative Filtering dengan algoritma SVD. Singular Value Decomposition (SVD) adalah algoritma yang digunakan untuk Collaborative Filtering berbasis matriks dekomposisi.
      ```ruby
      model = SVD()
@@ -258,6 +260,16 @@ Pendekatan berbasis Collaborative Filtering ini memberikan solusi berbasis data 
    - Tampilkan Top N
      ```ruby
      recommended_professions[:top_n]
+
+     Anda memilih hobi: Video Games
+     Seberapa besar minat Anda terhadap pekerjaan berbasis hobi ini? (0-1): 1
+       
+     Collaborative Filtering Recommendations (Professions):
+      1. Analis Sistem
+      2. Manajer Proyek IT
+      3. Administrator Sistem
+      4. Pengembang ERP
+      5. Spesialis Data Warehouse 
      ```
      
 ## 5.3 Evaluation
@@ -302,17 +314,7 @@ Di kode, metrik RMSE dan MAE diimplementasikan menggunakan pustaka Surprise:
    3. Reading books
    4. Sports
     
-   Masukkan nomor hobi yang ingin Anda pilih: 1
-    
-   Anda memilih hobi: Video Games
-   Seberapa besar minat Anda terhadap pekerjaan berbasis hobi ini? (0-1): 1
-    
-   Collaborative Filtering Recommendations (Professions):
-   1. Analis Sistem
-   2. Manajer Proyek IT
-   3. Administrator Sistem
-   4. Pengembang ERP
-   5. Spesialis Data Warehouse
+   Masukkan nomor hobi yang ingin Anda pilih: 
    ```
 ### Keterangan Hasil uji Collaborative Filtering
 1. Hasil Evaluasi:
