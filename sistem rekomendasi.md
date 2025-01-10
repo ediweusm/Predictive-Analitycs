@@ -316,7 +316,7 @@ Di kode, metrik RMSE dan MAE diimplementasikan menggunakan pustaka Surprise:
     
    Masukkan nomor hobi yang ingin Anda pilih: 
    ```
-### Keterangan Hasil uji Collaborative Filtering
+### Keterangan Hasil uji
 1. Hasil Evaluasi:
    - RMSE (Root Mean Squared Error): 0.2705
       - Mengukur rata-rata perbedaan kuadrat antara nilai prediksi dan nilai aktual.
@@ -328,19 +328,15 @@ Di kode, metrik RMSE dan MAE diimplementasikan menggunakan pustaka Surprise:
    - Kinerja: Nilai RMSE dan MAE menunjukkan bahwa prediksi model cukup akurat, dengan kesalahan prediksi kecil.
    - Konteks: Hasil ini menunjukkan Collaborative Filtering bekerja dengan baik dalam memprediksi preferensi terhadap jurusan berbasis pola data pengguna lain.
 
-# 6. Kesimpulan
-## Collaborative Filtering:
-   - Model ini menunjukkan hasil terbaik dalam hal kesalahan prediksi (RMSE dan MAE rendah).
-   - Cocok untuk memprediksi relevansi jurusan berbasis pola data pengguna lain.
-   - Dataset yang digunakan pada pengujian ini, tidak cocok untuk penerapan CF secara sepenuhnya, dan juga tidak cocok sepenuhnya menggunakan CB filtering.
-   - Solusi dari permasalahan ini digunakan metode Hybrid Filtering.
-     
+# 6. Kesimpulan    
 ## Hybrid Filtering:
-   - untuk mengatasi masalah cold start pada collaborative filtering, dicari kesamaan antar fitur pengguna seperti 10th Mark, 12th Mark, college mark, Gender, dan Hobbies dengan menggunakan cosine similarity untuk mengidentifikasi pengguna yang mirip, sehingga memungkinkan prediksi rekomendasi untuk pengguna baru berdasarkan preferensi pengguna yang serupa. 
+   - Model Collaborative menunjukkan hasil terbaik dalam hal kesalahan prediksi (RMSE dan MAE rendah), Cocok untuk memprediksi relevansi jurusan berbasis pola data pengguna lain.
+   - Dataset yang digunakan pada pengujian ini, tidak cocok untuk penerapan CF secara sepenuhnya, dan juga tidak cocok sepenuhnya menggunakan CB filtering. Solusi dari permasalahan ini digunakan metode Hybrid Filtering.
+   - Untuk mengatasi masalah cold start pada collaborative filtering, dicari kesamaan antar fitur pengguna seperti 10th Mark, 12th Mark, college mark, Gender, dan Hobbies dengan menggunakan cosine similarity untuk mengidentifikasi pengguna yang mirip, sehingga memungkinkan prediksi rekomendasi untuk pengguna baru berdasarkan preferensi pengguna yang serupa. 
 
 # 7. Saran
-## Collaborative Filtering:
-   - Mencoba menggunakan algoritma yang lebih kompleks (misalnya, kNN atau Matrix Factorization lebih lanjut).
+## Hybrid Filtering:
+   - Mencoba menggunakan algoritma yang lebih kompleks (misalnya, kNN atau Matrix Factorization lebih lanjut) untuk mengambil rujukan sebagai inputan pada algoritma Hybrid yang diusulkan pada percobaan ini.
 
 ## Referensi
 
